@@ -26,16 +26,73 @@
     
 //     });
 
+$router->group(['middleware' => 'auth'], function () use ($router) {
+
+        $router->group(['prefix' => 'campeonato'], function () use ($router) {
+
+            $router->post('', 'CampeonatoController@cadastro');
+            
+            $router->put('{id}', 'CampeonatoController@edit');
+            
+            $router->get('', 'CampeonatoController@buscar');
+            
+            $router->get('{id}', 'CampeonatoController@buscarPorId');
+        });
+
+        $router->group(['prefix' => 'equipe'], function () use ($router) {
+            
+            $router->post('', 'EquipeController@cadastro');
+            
+            $router->put('{id}', 'EquipeController@edit');
+            
+            $router->get('', 'EquipeController@buscar');
+            
+            $router->get('{id}', 'EquipeController@buscarPorId');
+        });
+
+        $router->group(['prefix' => 'rodada'], function () use ($router) {
+            
+            $router->post('', 'RodadaController@cadastro');
+            
+            $router->put('{id}', 'RodadaController@edit');
+            
+            $router->get('', 'RodadaController@buscar');
+            
+            $router->get('{id}', 'RodadaController@buscarPorId');
+        });
+
+        $router->group(['prefix' => 'jogo'], function () use ($router) {
+            
+            $router->post('', 'JogoController@cadastro');
+            
+            $router->put('{id}', 'JogoController@edit');
+            
+            $router->get('', 'JogoController@buscar');
+            
+            $router->get('{id}', 'JogoController@buscarPorId');
+        });
+
+        $router->group(['prefix' => 'aposta'], function () use ($router) {
+            
+            $router->post('', 'ApostaController@cadastro');
+            
+            $router->put('{id}', 'ApostaController@edit');
+            
+            $router->get('', 'ApostaController@buscar');
+            
+            $router->get('{id}', 'ApostaController@buscarPorId');
+        });
+    
+    $router->put('/usuario/{id}', 'UsuarioController@edit');
+
+});
+
 $router->post('/auth/login', 'AuthController@login');
+$router->post('/auth/register', 'UsuarioController@cadastro');
 
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->post('/campeonato', 'CampeonatoController@cadastro');
 
-$router->put('/campeonato/{id}', 'CampeonatoController@edit');
 
-$router->get('/campeonato', 'CampeonatoController@buscar');
-
-$router->get('/campeonato/{id}', 'CampeonatoController@buscarPorId');

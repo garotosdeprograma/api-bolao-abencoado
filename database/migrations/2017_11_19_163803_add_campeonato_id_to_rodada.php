@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateApostasTable extends Migration
+class AddCampeonatoIdToRodada extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateApostasTable extends Migration
      */
     public function up()
     {
-        Schema::create('apostas', function (Blueprint $table) {
-            $table->increments('id');
-            $table->boolean('aposta_pago')->default(false);
-            $table->decimal('pagamento',10,2)->default(0);
-            $table->timestamps();
+        Schema::table('rodadas', function (Blueprint $table) {
+            $table->integer('campeonato_id')->unsigned();
+            $table->foreign('campeonato_id')->references('id')->on('campeonatos');
         });
     }
 
@@ -28,6 +26,8 @@ class CreateApostasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('apostas');
+        Schema::table('rodadas', function (Blueprint $table) {
+            //
+        });
     }
 }

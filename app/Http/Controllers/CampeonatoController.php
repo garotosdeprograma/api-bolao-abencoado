@@ -26,7 +26,7 @@ class CampeonatoController extends Controller
         $campeonato->nome = $request->input('nome');
         $campeonato->save();
 
-        return response()->json(['campeonato' => $campeonato, 200]);
+        return response()->json(['campeonato' => $campeonato], 200);
     }
 
     public function edit(Request $request, $id)

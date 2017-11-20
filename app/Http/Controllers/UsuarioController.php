@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
-use App\Campeonato;
 use Illuminate\Support\Facades\DB;
+use App\Usuario;
 
 class UsuarioController extends Controller
 {
@@ -15,9 +15,9 @@ class UsuarioController extends Controller
         $validator = Validator::make($request->all(), [
             'nome' => 'required | between:4,100',
             'sobrenome' => 'required | between:2,100',
-            'email' => 'required | email',
+            'email' => 'required | email | unique:usuarios',
             'senha' => 'required | min:6',
-            'celular' => 'required | integer | size:11',
+            'celular' => 'required | integer',
             'ativo' => 'required | boolean',
             'tipo_usuario' => 'required | alpha'
         ], $message = [
@@ -27,11 +27,11 @@ class UsuarioController extends Controller
             'sobrenome.between' => 'O campo sobrenome aceita apenas entre 2 e 100 carateres',
             'email.required' => 'O campo email é obrigatório',
             'email.email' => 'Email inválido',
+            'email.unique' => 'Email já cadastrado no sistema',
             'senha.required' => 'O campo senha é obrigatório',
             'senha.min' => 'O campo senha aceita no mínimo 6b carateres',
             'celular.required' => 'O campo celular é obrigatório',
             'celular.integer' => 'O campo celular aceita apenas numeros inteiros',
-            'celular.size' => 'O campo celular aceita apenas 11 digitos',
             'ativo.required' => 'O campo ativo é obrigatório',
             'ativo.boolean' => 'O campo ativo aceita apenas booleanos',
             'tipo_usuario.required' => 'O campo tipo de usuario é obrigatório',
@@ -46,11 +46,16 @@ class UsuarioController extends Controller
         $usuario->nome = $request->input('nome');
         $usuario->sobrenome = $request->input('sobrenome');
         $usuario->email = $request->input('email');
-        $usuario->senha = $request->input('senha');
+        $usuario->password = app('hash')->make($request->input('senha'));
         $usuario->celular = $request->input('celular');
         $usuario->ativo = $request->input('ativo');
         $usuario->tipo_usuario = $request->input('tipo_usuario');
-        $usuario->save();
+        
+        try {
+            $usuario = $usuario->save();
+        } catch(Execption $e) {
+            return response()->json(['error' => $e], 400);
+        }
 
         return response()->json(['usuario' => $usuario, 200]);
     }
@@ -59,28 +64,21 @@ class UsuarioController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'nome' => 'isEmpty | between:4,100',
-            'sobrenome' => 'isEmpty | between:2,100',
-            'email' => 'isEmpty | email',
-            'senha' => 'isEmpty | min:6',
-            'celular' => 'isEmpty | integer | size:11',
-            'ativo' => 'isEmpty | boolean',
-            'tipo_usuario' => 'isEmpty | alpha'
+            'nome' => ' between:4,100',
+            'sobrenome' => ' between:2,100',
+            'email' => ' email',
+            'senha' => ' min:6',
+            'celular' => ' integer',
+            'ativo' => ' boolean',
+            'tipo_usuario' => ' alpha'
         ], $message = [
             'nome.isEmpty' => 'O campo nome é obrigatório',
             'nome.between' => 'O campo nome aceita apenas entre 4 e 100 carateres',
-            'sobrenome.isEmpty' => 'O campo sobrenome é obrigatório',
             'sobrenome.between' => 'O campo sobrenome aceita apenas entre 2 e 100 carateres',
-            'email.isEmpty' => 'O campo email é obrigatório',
             'email.email' => 'Email inválido',
-            'senha.isEmpty' => 'O campo senha é obrigatório',
             'senha.min' => 'O campo senha aceita no mínimo 6b carateres',
-            'celular.isEmpty' => 'O campo celular é obrigatório',
             'celular.integer' => 'O campo celular aceita apenas numeros inteiros',
-            'celular.size' => 'O campo celular aceita apenas 11 digitos',
-            'ativo.isEmpty' => 'O campo ativo é obrigatório',
             'ativo.boolean' => 'O campo ativo aceita apenas booleanos',
-            'tipo_usuario.isEmpty' => 'O campo tipo de usuario é obrigatório',
             'tipo_usuario.alpha' => 'O campo tipo de usuário aaceita apenas letras' 
         ]);
         
@@ -89,7 +87,7 @@ class UsuarioController extends Controller
         }
 
         if ($id == null) {
-            return response()->json(['error' => 'O id do usuario não fpi informado']);
+            return response()->json(['error' => 'O id do usuario não foi informado']);
         }
 
         $usuario = Usuario::find($id);
@@ -98,9 +96,7 @@ class UsuarioController extends Controller
             return response()->json(['Error' => 'Usuario não encontrado'], 400);
         }
 
-        $usuario = new Usuario();
-
-        if ($request->input('nome')) {
+        if ($request->input('nome') != null) {
             $usuario->nome = $request->input('nome');
         }
         if ($request->input('sobrenome')) {
@@ -110,36 +106,64 @@ class UsuarioController extends Controller
             $usuario->email = $request->input('email');
         }
         if ($request->input('senha')) {
-            $usuario->senha = $request->input('senha');
+            $usuario->password = app('hash')->make($request->input('senha'));
         }
         if ($request->input('celular')) {
             $usuario->celular = $request->input('celular');
         }
-        if ($resquest->input('ativo')) {
+        if ($request->input('ativo')) {
             $usuario->ativo = $request->input('ativo');
         }
         if ($request->input('tipo_usuario')) {
             $usuario->tipo_usuario = $request->input('tipo_usuario');
         }
+        
         $usuario->save();
 
         return response()->json(['usuario' => $usuario, 200]);
         
     }
 
-    public function buscarPagination(Request $request) {
-
-
-
-        $campeonatos = Campeonato::all();
-
-        return response()->json(['campeonatos' => $campeonatos, 200]);
-
-    }
-
-    public function countUsuarios()
+    public function countUsuarios(Request $request)
     {
-        return $count = DB::table('usuarios')->count();
+        $pagina = 0;
+        $qtd = 10;
+        $ativo = null;
+
+        if($request->query('pagina') != null && is_numeric($request->query('pagina'))){
+            $pagina = $request->query('pagina');
+        }
+        if($request->query('qtd') != null && is_numeric($request->query('qtd')) && $request->query('qtd') <= 30){
+            $qtd = $request->query('qtd');
+        }
+        if($request->query('ativo') != null && ($request->query('ativo') === "true" || $request->query('ativo') === "false")){
+            $ativo = $request->query('ativo');
+        }
+        $usuario = Auth::Usuario();
+        
+        $users = User::select(
+            'id',
+            'nome',
+            'email',
+            'status',
+            'perfil',
+            'tipo_usuario'
+            );
+        if($request->query('nome') != null){
+            $users = $users->where('users.name', 'like', '%'.$request->query('nome').'%');
+        }
+        if($request->query('sobrenome') != null){
+            $users = $users->where('sobrenome', 'like', '%'.$request->query('sobrenome').'%');
+        }
+        if($request->query('email') != null){
+            $users = $users->where('email', 'like', '%'.$request->query('email').'%');
+        }
+        if($ativo != null){
+            $users = $users->where('ativo',($ativo === 'true'));
+        }
+        $count = $users->count();
+        
+        return response()->json($count, '200');
     }
 
     public function buscarPorId($id) {
@@ -156,5 +180,51 @@ class UsuarioController extends Controller
 
         return response()->json(['usuario' => $usuario, 200]);
 
+    }
+
+    public function buscarList(Request $request)
+    {
+        $pagina = 0;
+        $qtd = 10;
+        $ativo = null;
+
+        if($request->query('pagina') != null && is_numeric($request->query('pagina'))){
+            $pagina = $request->query('pagina');
+        }
+        if($request->query('qtd') != null && is_numeric($request->query('qtd')) && $request->query('qtd') <= 30){
+            $qtd = $request->query('qtd');
+        }
+        if($request->query('ativo') != null && ($request->query('ativo') === "true" || $request->query('ativo') === "false")){
+            $ativo = $request->query('ativo');
+        }
+        $usuario = Auth::Usuario();
+        
+        $users = User::select(
+            'id',
+            'nome',
+            'email',
+            'status',
+            'perfil',
+            'tipo_usuario'
+            );
+        if($request->query('nome') != null){
+            $users = $users->where('users.name', 'like', '%'.$request->query('nome').'%');
+        }
+        if($request->query('sobrenome') != null){
+            $users = $users->where('sobrenome', 'like', '%'.$request->query('sobrenome').'%');
+        }
+        if($request->query('email') != null){
+            $users = $users->where('email', 'like', '%'.$request->query('email').'%');
+        }
+        if($ativo != null){
+            $users = $users->where('ativo',($ativo === 'true'));
+        }
+        $users = $users
+            ->orderBy('nome')
+            ->offset($pagina*$qtd)
+            ->limit($qtd)
+            ->get();
+        
+        return response()->json($users, '200');
     }
 }

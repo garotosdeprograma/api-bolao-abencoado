@@ -15,8 +15,9 @@ class CreateRodadasTable extends Migration
     {
         Schema::create('rodadas', function (Blueprint $table) {
             $table->integer('numero')->unsigned();
-            $table->timestamp('inicio');
-            $table->timestamp('fim');
+            $table->dateTimeTz('ano');
+            $table->dateTimeTz('inicio');
+            $table->dateTimeTz('fim');
             $table->increments('id');
             $table->timestamps();
         });

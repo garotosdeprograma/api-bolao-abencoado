@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddEquipeAndJogoForeignKey extends Migration
+class AddUsuarioForeignKeyToApostas extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,8 @@ class AddEquipeAndJogoForeignKey extends Migration
     public function up()
     {
         Schema::table('apostas', function (Blueprint $table) {
-            // $table->integer('equipe_escolhida')->unsigned();
-            // $table->foreign('equipe_escolhida')->references('id')->on('equipes');
+            $table->integer('usuario_id')->unsigned();
+            $table->foreign('usuario_id')->references('id')->on('usuarios');
         });
     }
 
@@ -27,7 +27,7 @@ class AddEquipeAndJogoForeignKey extends Migration
     public function down()
     {
         Schema::table('apostas', function (Blueprint $table) {
-            // $table->dropForeign(['equipe_escolhida, jogo_id']);
+            //
         });
     }
 }

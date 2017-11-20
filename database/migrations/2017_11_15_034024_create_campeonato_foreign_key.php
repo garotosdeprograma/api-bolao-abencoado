@@ -27,7 +27,7 @@ class CreateCampeonatoForeignKey extends Migration
     public function down()
     {
         Schema::table('equipes', function (Blueprint $table) {
-            $table->dropForeign(['campeonato_id']);
+            // $table->dropForeign(['campeonato_id']);
         });
     }
 }
