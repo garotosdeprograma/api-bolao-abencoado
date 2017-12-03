@@ -14,8 +14,11 @@ class CreateEquipesTable extends Migration
     public function up()
     {
         Schema::create('equipes', function (Blueprint $table) {
-            $table->string('nome');
             $table->increments('id');
+            $table->string('nome');
+            $table->string('estado')->nullable();
+            $table->string('cidade')->nullable();
+            $table->string('estadio')->nullable();
             $table->timestamps();
         });
     }

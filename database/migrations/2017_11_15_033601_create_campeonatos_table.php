@@ -14,8 +14,8 @@ class CreateCampeonatosTable extends Migration
     public function up()
     {
         Schema::create('campeonatos', function (Blueprint $table) {
-            $table->string('nome');
             $table->increments('id');
+            $table->string('nome');
             $table->timestamps();
         });
     }

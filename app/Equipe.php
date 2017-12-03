@@ -25,4 +25,8 @@ class Equipe extends Model
     protected $hidden = [
         '',
     ];
+
+    public function campeonatos() {
+        return $this->belongsToMany('App\Campeonato', 'equipe_campeonato', 'equipe_id', 'campeonato_id');
+    }
 }

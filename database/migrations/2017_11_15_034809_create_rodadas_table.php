@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEquipeEscolhidosTable extends Migration
+class CreateRodadasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class CreateEquipeEscolhidosTable extends Migration
      */
     public function up()
     {
-        Schema::create('equipe_escolhidos', function (Blueprint $table) {
+        Schema::create('rodadas', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('numero')->unsigned();
+            $table->dateTimeTz('ano');
+            $table->dateTimeTz('inicio');
+            $table->dateTimeTz('fim');
             $table->timestamps();
         });
     }
@@ -26,6 +30,6 @@ class CreateEquipeEscolhidosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('equipe_escolhidos');
+        Schema::dropIfExists('rodadas');
     }
 }

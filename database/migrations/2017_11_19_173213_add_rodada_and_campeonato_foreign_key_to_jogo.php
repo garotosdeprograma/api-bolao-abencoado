@@ -14,9 +14,9 @@ class AddRodadaAndCampeonatoForeignKeyToJogo extends Migration
     public function up()
     {
         Schema::table('jogos', function (Blueprint $table) {
-            $table->integer('rodada_id')->unsigned();
+            $table->integer('rodada_id')->unsigned()->after('id');
             $table->foreign('rodada_id')->references('id')->on('rodadas');
-            $table->integer('campeonato_id')->unsigned();
+            $table->integer('campeonato_id')->unsigned()->after('rodada_id');
             $table->foreign('campeonato_id')->references('id')->on('campeonatos');
         });
     }

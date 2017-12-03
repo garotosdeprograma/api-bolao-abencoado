@@ -16,8 +16,8 @@ class CreateJogosTable extends Migration
         Schema::create('jogos', function (Blueprint $table) {
             $table->increments('id');
             $table->string('estadio')->nullable();
-            $table->integer('gol_casa');
-            $table->integer('gol_visitante');
+            $table->integer('gol_casa')->unsigned()->default(0);
+            $table->integer('gol_visitante')->unsigned()->default(0);
             $table->timestamp('inicio');
             $table->timestamp('fim');
             $table->timestamps();

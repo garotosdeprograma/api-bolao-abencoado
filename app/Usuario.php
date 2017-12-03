@@ -40,4 +40,9 @@ class Usuario extends Model implements JWTSubject, AuthenticatableContract, Auth
     {
         return [];
     }
+
+    public function apostas()
+    {
+        return $this->hasMany('App\Aposta');
+    }
 }

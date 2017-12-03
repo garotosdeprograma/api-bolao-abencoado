@@ -14,7 +14,7 @@ class AddCampeonatoIdToRodada extends Migration
     public function up()
     {
         Schema::table('rodadas', function (Blueprint $table) {
-            $table->integer('campeonato_id')->unsigned();
+            $table->integer('campeonato_id')->unsigned()->after('id');
             $table->foreign('campeonato_id')->references('id')->on('campeonatos');
         });
     }

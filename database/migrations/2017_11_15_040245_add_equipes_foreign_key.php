@@ -14,8 +14,8 @@ class AddEquipesForeignKey extends Migration
     public function up()
     {
         Schema::table('jogos', function (Blueprint $table) {
-            $table->integer('equipe_casa')->unsigned();
-            $table->integer('equipe_visitante')->unsigned();
+            $table->integer('equipe_casa')->unsigned()->after('id');
+            $table->integer('equipe_visitante')->unsigned()->after('equipe_casa');
             $table->foreign('equipe_casa')->references('id')->on('equipes');
             $table->foreign('equipe_visitante')->references('id')->on('equipes');
         });

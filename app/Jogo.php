@@ -30,4 +30,13 @@ class Jogo extends Model
     protected $hidden = [
         '',
     ];
+
+    /**
+     * Defining many to many relationship with App\Aposta.
+     *
+     * @var function
+     */
+    public function apostas() {
+        return $this->belongsToMany('App\Aposta', 'jogo_aposta', 'jogo_id', 'aposta_id');
+    }
 }

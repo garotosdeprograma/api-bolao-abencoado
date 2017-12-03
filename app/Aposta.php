@@ -28,8 +28,22 @@ class Aposta extends Model
         '',
     ];
 
-    public function equipeEscolhidos()
+    /**
+     * Defining one to many inverse relationship with App\User.
+     *
+     * @var function
+     */
+    public function users()
     {
-        return $this->hasMany('App\EquipeEscolhido');
+        return $this->belongsTo('App\User');
+    }
+
+    /**
+     * Defining many to many relationship with App\Jogo.
+     *
+     * @var function
+     */
+    public function jogos() {
+        return $this->belongsToMany('App\jogo', 'jogo_aposta', 'aposta_id', 'jogo_id');
     }
 }

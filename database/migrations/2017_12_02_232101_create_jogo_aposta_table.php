@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddUsuarioForeignKeyToApostas extends Migration
+class CreateJogoApostaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddUsuarioForeignKeyToApostas extends Migration
      */
     public function up()
     {
-        Schema::table('apostas', function (Blueprint $table) {
-            $table->integer('usuario_id')->unsigned();
-            $table->foreign('usuario_id')->references('id')->on('usuarios');
+        Schema::create('jogo_aposta', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
         });
     }
 
@@ -26,8 +26,6 @@ class AddUsuarioForeignKeyToApostas extends Migration
      */
     public function down()
     {
-        Schema::table('apostas', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('jogo_aposta');
     }
 }
