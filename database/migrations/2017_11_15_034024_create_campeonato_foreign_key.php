@@ -13,10 +13,10 @@ class CreateCampeonatoForeignKey extends Migration
      */
     public function up()
     {
-        Schema::table('equipes', function (Blueprint $table) {
-            $table->integer('campeonato_id')->unsigned()->after('id');
-            $table->foreign('campeonato_id')->references('id')->on('campeonatos');
-        });
+        // Schema::table('equipes', function (Blueprint $table) {
+        //     $table->integer('campeonato_id')->unsigned()->after('id');
+        //     $table->foreign('campeonato_id')->references('id')->on('campeonatos');
+        // });
     }
 
     /**

@@ -13,8 +13,18 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         Model::unguard();
+
+        $this->call([
+            UsersTableSeeder::class,
+            CampeonatosTableSeeder::class,
+            EquipesTableSeeder::class,
+            RodadasTableSeeder::class,
+            JogosTableSeeder::class
+        ]);
         
-        $this->call(UsersTableSeeder::class);
+        // $this->call(UsersTableSeeder::class);
+        // $this->call(CampeonatosTableSeeder::class);
+        // $this->call(EquipesTableSeeder::class);
 
         Model::reguard();
     }

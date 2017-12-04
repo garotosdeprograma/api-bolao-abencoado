@@ -14,26 +14,51 @@ use Carbon\Carbon;
 */
 
 $factory->define(App\Usuario::class, function (Faker\Generator $faker) {
+    static $password;
     return [
         'nome' => $faker->firstName,
         'sobrenome' => $faker->firstName,
+        'password' => $password ?: $password = app('hash')->make('secret'),
         'email' => $faker->email,
     ];
 });
 
-// $factory->define(App\Campeonato::class, function (Faker\Generator $faker) {
-//     return [
-//         'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-//         'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-//     ];
-// });
+$factory->define(App\Campeonato::class, function (Faker\Generator $faker) {
+    return [
+        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+    ];
+});
 
-// $factory->define(App\Equipe::class, function (Faker\Generator $faker) {
-//     return [
-//         'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-//         'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-//     ];
-// });
+$factory->define(App\Equipe::class, function (Faker\Generator $faker) {
+    return [
+        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+    ];
+});
+
+$factory->define(App\Rodada::class, function (Faker\Generator $faker) {
+    return [
+        'numero' => $faker->unique()->numberBetween($min = 1, $max = 15),
+        'ano' => Carbon::now()->format('Y-m-d'),
+        'inicio' => Carbon::now()->format('Y-m-d H:i:s'),
+        'fim' => Carbon::now()->format('Y-m-d H:i:s'),
+        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+    ];
+});
+
+$factory->define(App\Jogo::class, function (Faker\Generator $faker) {
+    return [
+        'campeonato_id' => 1,
+        'equipe_casa' => $faker->numberBetween($min = 1, $max = 12),
+        'equipe_visitante' => $faker->numberBetween($min = 1, $max = 12),
+        'inicio' => Carbon::now()->format('Y-m-d H:i:s'),
+        'fim' => Carbon::now()->format('Y-m-d H:i:s'),
+        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+    ];
+});
 
 // $factory->define(App\Rodada::class, function (Faker\Generator $faker) {
 //     return [

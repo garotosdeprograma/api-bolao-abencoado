@@ -25,7 +25,13 @@ class Campeonato extends Model
         '',
     ];
 
-    public function equipes() {
+    public function equipes() 
+    {
         return $this->belongsToMany('App\Equipe', 'equipe_campeonato', 'campeonato_id', 'equipe_id');
+    }
+
+    public function rodadas()
+    {
+        return $this->hasMany('App\Rodada');
     }
 }

@@ -14,6 +14,7 @@ class CreateUsuariosTable extends Migration
     public function up()
     {
         Schema::create('usuarios', function (Blueprint $table) {
+            $table->increments('id');
             $table->string('nome');
             $table->string('sobrenome');
             $table->string('email')->unique();
@@ -21,7 +22,6 @@ class CreateUsuariosTable extends Migration
             $table->string('celular')->nullable();
             $table->boolean('ativo');
             $table->string('tipo_usuario');
-            $table->increments('id');
             $table->timestamps();
         });
     }

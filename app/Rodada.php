@@ -28,4 +28,9 @@ class Rodada extends Model
     protected $hidden = [
         '',
     ];
+
+    public function jogos()
+    {
+        return $this->hasMany('App\Jogo');
+    }
 }
