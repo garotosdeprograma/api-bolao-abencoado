@@ -76,8 +76,6 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             
             $router->post('', 'ApostaController@cadastro');
             
-            $router->put('{id}', 'ApostaController@edit');
-            
             $router->get('', 'ApostaController@buscar');
             
             $router->get('{id}', 'ApostaController@buscarPorId');
