@@ -12,7 +12,7 @@ class JogosTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Jogo::class, 6)->make()->each(function($jogo){
+        factory(App\Jogo::class, 5)->make()->each(function($jogo){
             $rodada = Rodada::find(1);
             $rodada->jogos()->save($jogo);
         });

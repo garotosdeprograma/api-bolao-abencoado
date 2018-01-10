@@ -40,14 +40,28 @@ class Jogo extends Model
         return $this->belongsToMany('App\Aposta', 'jogo_aposta', 'jogo_id', 'aposta_id');
     }
 
+    /**
+     * Obter campeonato do jogo.
+     */
     public function campeonato()
     {
         return $this->hasOne('App\Campeonato');
     }
 
+    /**
+     * Obter rodada do jogo.
+     */
     public function rodada()
     {
         return $this->belongsTo('App\Rodada');
+    }
+
+    /**
+     * Obter equipes do jogo.
+     */
+    public function equipes()
+    {
+        return $this->hasMany('App\Equipe');
     }
 
 

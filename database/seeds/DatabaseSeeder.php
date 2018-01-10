@@ -21,10 +21,6 @@ class DatabaseSeeder extends Seeder
             RodadasTableSeeder::class,
             JogosTableSeeder::class
         ]);
-        
-        // $this->call(UsersTableSeeder::class);
-        // $this->call(CampeonatosTableSeeder::class);
-        // $this->call(EquipesTableSeeder::class);
 
         Model::reguard();
     }

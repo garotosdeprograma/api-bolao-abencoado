@@ -12,42 +12,28 @@ class EquipeController extends Controller
 {
     public function cadastro(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'nome' => 'required | between:4,100',
+        $this->validate($request, [
+            'nome' => 'required | alpha_spaces | between:3,50',
             'campeonato_id' => 'required | integer'
-        ], $message = [
-            'nome.required' => 'O campo nome é obrigatório',
-            'nome.between' => 'O campo nome aceita apenas entre 3 e 100 carateres',
-            'campeonato_id.required' => 'O id do campeonato deve ser informado',
-            'campeonato_id.integer' => 'O id do campeonato deve apenas numero inteiro',
         ]);
-        
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
 
         $equipe = new Equipe();
         $equipe->nome = $request->input('nome');
-        $equipe->campeonato_id = $request->input('campeonato_id');
         $equipe->save();
 
+        $equipe->campeonatos()->attach($request->input('campeonato_id'));
+        
         return response()->json(['equipe' => $equipe], 200);
     }
 
     public function edit(Request $request, $id)
     {
 
-        $validator = Validator::make($request->all(), [
-            'nome' => 'between:4, 100',
-            'campeonato_id' => 'integer'
-        ], $message = [
-            'nome.between' => 'O campo nome aceita apenas entre 4 e 100 carateres',
-            'campeonato_id.integer' => 'O id do campeonato aceita apenas numeros interios'
+        $this->validate($request, [
+            'nome' => 'alpha_spaces | between:3,50',
+            'campeonato_id' => 'integer',
+            'detach' => 'integer'
         ]);
-
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
 
         if ($id == null) {
             return response()->json(['error' => 'O id da equipe não foi informado']);
@@ -63,11 +49,16 @@ class EquipeController extends Controller
             $equipe->nome = $request->input('nome');
         }
 
-        if ($request->input('campeonato_id') != null) {
-            $equipe->campeonato_id = $request->input('campeonato_id');
+        if (null == $request->input('detach')) {
+            $equipe->campeonatos()->detach($request->input('detach'));
         }
 
         $equipe->save();
+
+        if ($request->input('campeonato_id') != null) {
+            $equipe->campeonatos()->attach($request->input('campeonato_id'));
+        }
+
         
         return response()->json(['equipe' => $equipe], 200);
         
@@ -77,21 +68,17 @@ class EquipeController extends Controller
 
         $equipes = Equipe::select(
             'id',
-            'nome',
-            'campeonato_id'
+            'nome'
         );
-
-        if ($request->query('campeonato_id') != null) {
-            $equipes = $equipes->where('campeonato_id',$request->query('campeonato_id'));
-        }
 
         if ($request->query('nome') != null) {
             $equipes = $equipes->where('nome','like','%'.$request->query('nome').'%');
         }
 
         $equipes = $equipes
-                    ->orderBy('nome')
-                    ->get();
+                ->with('campeonatos')
+                ->orderBy('nome')
+                ->get();
 
         return response()->json(['equipes' => $equipes], 200);
 

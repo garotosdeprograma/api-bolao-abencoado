@@ -13,20 +13,9 @@ class Rodada extends Model
      * @var array
      */
     protected $fillable = [
-        'numero',
+        'nome',
         'inicio',
         'fim',
-        'campeonato_id',
-        'ano'
-    ];
-
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        '',
     ];
 
     public function jogos()

@@ -12,121 +12,87 @@ class RodadaController extends Controller
 {
     public function cadastro(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'numero' => 'required | integer',
-            'inicio' => 'required | date',
+        $this->validate($request, [
+            'nome' => 'required | alpha_num | between:3,30',
+            'inicio' => 'required | date | before:fim',
             'fim' => 'required | date',
-            'ano' => 'required | date',
-            'campeonato_id' => 'required | integer'
-        ], $message = [
-            'numero.required' => 'O campo numero é obrigatório',
-            'numero.integer' => 'O campo nome aceita numeros interios',
-            'inicio.required' => 'O campo início é obrigatório',
-            'inicio.date' => 'O formato do campo inicio deve ser date',
-            'fim.required' => 'O campo fim é obrigatório',
-            'fim.date' => 'O formato do campo fim deve ser date',
-            'ano.required' => 'O campo ano é obrigatório',
-            'ano.date' => 'O formato do campo ano deve ser date',
-            'campeonato_id' => 'O id do campeonato é obrigatório',
-            'campeonato_id.integer' => 'O id do campeonato aceita apenas numeros interios'
         ]);
-        
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
 
         $rodada = new Rodada();
-        $rodada->numero = $request->input('numero');
-        $rodada->campeonato_id = $request->input('campeonato_id');
+        $rodada->nome = $request->input('nome');
         $rodada->inicio = $request->input('inicio');
         $rodada->fim = $request->input('fim');
-        $rodada->ano = $request->input('ano');
         $rodada->save();
 
-        return response()->json(['rodada' => $rodada], 200);
+        return response()->json(['rodada' => $rodada], 201);
     }
 
     public function edit(Request $request, $id)
     {
 
         $validator = Validator::make($request->all(), [
-            'numero' => 'integer',
-            'inicio' => 'date',
-            'fim' => 'date',
-            'ano' => 'date',
-            'campeonato_id' => 'integer'
-        ], $message = [
-            'numero.between' => 'O campo nome aceita apenas entre 4 e 100 carateres',
-            'campeonato_id.integer' => 'O id do campeonato aceita apenas numeros interios',
-            'fim.date' => 'O formato do campo fim deve ser date',
-            'inicio.inicio' => 'O formato do campo inicio deve ser date',
-            'ano.date' => 'O formato do campo ano deve ser date'
+            'nome' => 'nullable | alpha_num | between:3,30',
+            'inicio' => 'date | required_if:fim',
+            'fim' => 'date | after:inicio | required_if:inicio',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+        if (null == $id) {
+            return response()->json(['error' => 'Dados incompletos']);
         }
 
-        if ($id == null) {
-            return response()->json(['error' => 'O id da rodada não foi informado']);
+        $rodada = Rodada::findOrFail($id);
+
+
+        if (null != $request->input('nome')) {
+            $rodada->nome = $request->input('nome');
         }
 
-        $rodada = Rodada::find($id);
-
-        if ($rodada == null) {
-            return response()->json(['Error' => 'rodada não encontrado'], 400);
-        }
-
-        if ($request->input('numero') != null) {
-            $rodada->numero = $request->input('numero');
-        }
-
-        if ($request->input('inicio') != null) {
+        if (null != $request->input('inicio')) {
             $rodada->inicio = $request->input('inicio');
         }
 
-        if ($request->input('campeonato_id') != null) {
-            $rodada->campeonato_id = $request->input('campeonato_id');
-        }
-
-        if ($request->input('fim') != null) {
+        if (null != $request->input('fim')) {
             $rodada->fim = $request->input('fim');
-        }
-
-        if ($request->input('ano') != null) {
-            $rodada->ano = $request->input('ano');
         }
 
         $rodada->save();
         
-        return response()->json(['equipe' => $rodada], 200);
+        return response()->json(['rodada' => $rodada], 200);
         
     }
 
     public function buscar(Request $request) {
 
+        $this->validate($request, [
+            'nome' => 'nullable | alpha_num | between:3,30',
+            'inicio' => 'date',
+            'fim' => 'date',
+        ]);
+
         $rodadas = Rodada::select(
             'id',
-            'numero',
-            'campeonato_id',
-            'ano'
+            'nome',
+            'inicio',
+            'fim',
+            'created_at',
+            'updated_at'
         );
 
-        if ($request->query('campeonato_id') != null) {
-            $rodadas = $rodadas->where('campeonato_id',$request->query('campeonato_id'));
+        if (null != $request->input('nome')) {
+            $rodadas->where('nome', 'like', '%'.$request->input('nome').'%');
         }
 
-        if ($request->query('numero') != null) {
-            $rodadas = $rodadas->where('numero',$request->query('numero'));
+        if (null != $request->input('inicio')) {
+            $rodadas->whereDate('inicio', '>=', $request->input('inicio'));
         }
 
-        if ($request->query('ano') != null) {
-            $rodadas = $rodadas->where('ano','like',$request->query('ano'));
+        if (null != $request->input('fim')) {
+            $rodadas->whereDate('fim', '<=', $request->input('fim'));
         }
 
         $rodadas = $rodadas
-                    ->orderBy('numero')
-                    ->get();
+            ->orderBy('inicio', 'DESC')
+            ->paginate(10);
 
         return response()->json(['rodadas' => $rodadas], 200);
 
@@ -134,15 +100,11 @@ class RodadaController extends Controller
 
     public function buscarPorId($id) {
 
-        if ($id == null) {
-            return response()->json(['error' => 'O id do rodada nao foi informado'], 400);
+        if (!is_numeric($id)) {
+            return response()->json(['error' => 'Id inválido'], 404);
         }
         
         $rodada = Rodada::find($id);
-
-        if ($rodada == null) {
-            return response()->json(['error' => 'rodada não encontrado'], 400);
-        }
 
         return response()->json(['rodada' => $rodada], 200);
 
