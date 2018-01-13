@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Validator;
 use App\Aposta;
 use App\Jogo;
+use App\Rank;
 use App\Equipe;
 use App\ApostaJogo;
 
@@ -16,105 +17,223 @@ class ApostaController extends Controller
     public function cadastro(Request $request)
     {
 
-        $listaJogosAposta = $request->input('aposta');
+        $this->validate($request, [
+            'usuario_id' => 'required | integer',
+            'rodada_id' => 'required | integer',
+            'premio' => 'required | numeric',
+            'jogo_1' => 'required | integer',
+            'jogo_2' => 'required | integer',
+            'jogo_3' => 'required | integer',
+            'jogo_4' => 'required | integer',
+            'time_1' => 'required | integer',
+            'time_2' => 'required | integer',
+            'time_3' => 'required | integer',
+            'time_4' => 'required | integer',
+            'aposta_pago' => 'required | boolean',
+        ]);
 
-        $teamFrequency = array_count_values($listaJogosAposta);
+        $jogo1 = Jogo::find($request->input('jogo_1'));
+        if ($jogo1 == null) {
+            return response()->json(['Essa aposta consta jogo(s) inexistente no sistema'], 400);
+        }
+
+        if ($request->input('time_1') != $jogo1->equipe_casa && $request->input('time_1') != $jogo1->equipe_visitante) {
+            return response()->json(['error' => 'Dados da aposta inválidos']);
+        }
+
+        $jogo2 = Jogo::find($request->input('jogo_2'));
+        if ($jogo2 == null) {
+            return response()->json(['Essa aposta consta jogo(s) inexistente no sistema'], 400);
+        }
+
+        if ($request->input('time_2') != $jogo2->equipe_casa && $request->input('time_2') != $jogo2->equipe_visitante) {
+            return response()->json(['error' => 'Dados da aposta inválidos']);
+        }
+
+        $jogo3 = Jogo::find($request->input('jogo_3'));
+        if ($jogo3 == null) {
+            return response()->json(['Essa aposta consta jogo(s) inexistente no sistema'], 400);
+        }
+
+        if ($request->input('time_3') != $jogo3->equipe_casa && $request->input('time_3') != $jogo3->equipe_visitante) {
+            return response()->json(['error' => 'Dados da aposta inválidos']);
+        }
+
+        $jogo4 = Jogo::find($request->input('jogo_4'));
+        if ($jogo4 == null) {
+            return response()->json(['Essa aposta consta jogo(s) inexistente no sistema'], 400);
+        }
+
+        if ($request->input('time_4') != $jogo4->equipe_casa && $request->input('time_4') != $jogo4->equipe_visitante) {
+            return response()->json(['error' => 'Dados da aposta inválidos']);
+        }
+
+        $idsJogos = [];
+        $idsTimes = [];
+            
+        array_push($idsJogos, $request->input('jogo_1'));
+        array_push($idsJogos, $request->input('jogo_2'));
+        array_push($idsJogos, $request->input('jogo_3'));
+        array_push($idsJogos, $request->input('jogo_4'));
+        array_push($idsTimes, $request->input('time_1'));
+        array_push($idsTimes, $request->input('time_2'));
+        array_push($idsTimes, $request->input('time_3'));
+        array_push($idsTimes, $request->input('time_4'));
+
+        sort($idsJogos);
+        sort($idsTimes);
+
+        $chave_aposta = '';
+
+        $jogoFrequency = array_count_values($idsJogos);
+
+        foreach ($jogoFrequency as $key => $value) {
+            if ($value > 1) {
+                return response()->json(['Não pode escolher duas vezes o mesmo jogo'], 400);
+            }
+        }
+
+        foreach ($idsJogos as $key => $value) {
+            $chave_aposta = $chave_aposta.''.$value.'-';
+        }
+
+        foreach ($idsTimes as $key => $value) {
+            $chave_aposta = $chave_aposta.''.$value.'-';
+        }
+
+        try {
+            $checkAposta = DB::table('check_aposta')->insert(
+                ['rodada_id' => $request->input('rodada_id'), 'chave_aposta' => $chave_aposta]
+            );
+        } catch(\Illuminate\Database\QueryException $e) {
+            return response()->json(['error' => 'Combinação já escolhida'], 500);
+        }
+
+
+        try {
+
+            $aposta = new Aposta();
+            $aposta->usuario_id = $request->input('usuario_id');
+            $aposta->premio = $request->input('premio');
+            $aposta->aposta_pago = $request->input('aposta_pago');
+            $aposta->rodada_id = $request->input('rodada_id');
+            
+            $aposta->save();
+
+        } catch(\Illuminate\Database\QueryException $e) {
+            DB::table('check_aposta')->where('id',$checkAposta->id)->delete();
+            return response()->json(['error' => 'Occoreu um problema ao salvar a aposta, por favor tente mais tarde'], 500);
+        }
 
         $apostaJogoList = [];
 
-        foreach ($listaJogosAposta as $key => $value) {
-            $jogo = Jogo::find($key);
-            if ($jogo == null) {
-                return response()->json(['Essa aposta consta jogo(s) inexistente no sistema'], 400);
-                break;
-            }
-            $equipe = Equipe::find($value);
-            if ($equipe == null) {
-                return response()->json(['Essa aposta consta equipe(s) inexistente no sistema'], 400);
-                break;
-            }
+        $apostaJogo1 = new ApostaJogo();
+        $apostaJogo1->jogo_id = $request->input('jogo_1');
+        $apostaJogo1->time_id = $request->input('time_1');
+        array_push($apostaJogoList, $apostaJogo1);
 
-            $result = array_filter($teamFrequency, function($value) {
-                return $value > 2;
-            });
+        $apostaJogo2 = new ApostaJogo();
+        $apostaJogo2->jogo_id = $request->input('jogo_2');
+        $apostaJogo2->time_id = $request->input('time_2');
+        array_push($apostaJogoList, $apostaJogo2);
 
-            if (sizeof($result) > 0) {
-                return response()->json(['Não pode escolher mais de duas vezes o mesmo team'], 400);
-                break;
-            }
-            
-            $apostaJogo = new ApostaJogo();
-            $apostaJogo->jogo_id = $key;
-            $apostaJogo->equipe_id = $value;
-            array_push($apostaJogoList, $apostaJogo);
+        $apostaJogo3 = new ApostaJogo();
+        $apostaJogo3->jogo_id = $request->input('jogo_3');
+        $apostaJogo3->time_id = $request->input('time_3');
+        array_push($apostaJogoList, $apostaJogo3);
 
-        }
-
-        $validator = Validator::make($request->all(), [
-            'usuario_id' => 'required | integer',
-            'pagamento' => 'required | numeric',
-            'aposta_pago' => 'required | boolean',
-        ], $message = [
-            'usuario_id.required' => 'O id do usuario efetuando a aposta é necessário',
-            'usuario_id.integer' => 'O id do usuário efetuando a aposta deve ser inteiro',
-            'pagamento.required' => 'O campo status do pagamento é obrigatório',
-            'pagamento.numeric' => 'o campo status do pagamento deve ser numerico',
-            'aposta_pago.required' => 'O campo aposta pago é obrigatório',
-            'aposta_pago.boolean' => 'o campo aposta pago deve ser booleano',
-        ]);
-        
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
-
-        $aposta = new Aposta();
-        $aposta->usuario_id = $request->input('usuario_id');
-        $aposta->pagamento = $request->input('pagamento');
-        $aposta->aposta_pago = $request->input('aposta_pago');
-        
-        
-        $aposta->save();
+        $apostaJogo4 = new ApostaJogo();
+        $apostaJogo4->jogo_id = $request->input('jogo_4');
+        $apostaJogo4->time_id = $request->input('time_4');
+        array_push($apostaJogoList, $apostaJogo4);
         
         foreach ($apostaJogoList as $key => $value) {
-            $aposta->jogoAposta()->attach($value->jogo_id, ['equipe_id' => $value->equipe_id]);
+            $aposta->jogoAposta()->attach($value->jogo_id, ['equipe_id' => $value->time_id]);
         }
 
-        return response()->json(['aposta' => $aposta], 200);
+        return response()->json(['aposta' => $aposta], 201);
     }
 
-    public function buscar(Request $request) {
+    public function buscar($id_rodada) {
 
-        $apostas = Aposta::select(  "id",
+        if(!is_numeric($id_rodada)) {
+            return response()->json(['error' => 'Id rodada inválido'], 404);
+        }
+
+        try {
+            $apostas = Aposta::select(  "id",
                                     "aposta_pago",
-                                    "pagamento",
+                                    "premio",
+                                    'rodada_id',
                                     "usuario_id",
                                     "created_at",
                                     "updated_at"
                                 );
+            
+            if (null != $rodada_id) {
+                $aposta->where('rodada_id', $rodada_id);
+            }
 
+            $apostas = $apostas
+                        ->orderBy('created_at', 'DESC')
+                        ->with('jogoAposta')
+                        ->paginate();
+        } catch(\Illuminate\Database\QueryException $e) {
+            return response()->json(['error' => 'Ocorreu um problema ao buscar as apostas'], 500);
+        }
 
-        $apostas = $apostas
-                    ->orderBy('created_at', 'DESC')
-                    ->with('jogoAposta')
-                    ->get();
-
-        return response()->json(['apostas' => $apostas], 200);
+        return response()->json($apostas, 200);
 
     }
 
-    // public function buscarPorId($id) {
+    public function ranking($rodada_id) {
 
-    //     if ($id == null) {
-    //         return response()->json(['error' => 'O id do rodada nao foi informado'], 400);
-    //     }
-        
-    //     $jogo = Jogo::find($id);
+        if(!is_numeric($rodada_id) || null == $rodada_id) {
+            return response()->json(['error' => 'Id rodada inválido'], 404);
+        }
 
-    //     if ($jogo == null) {
-    //         return response()->json(['error' => 'jogo não encontrado'], 400);
-    //     }
+        try {
 
-    //     return response()->json(['jogo' => $jogo], 200);
+            $apostas = Aposta::select(  "id",
+                                    'aposta_pago',
+                                    'usuario_id',    
+                                    'premio',
+                                    'rodada_id',
+                                    "created_at",
+                                    "updated_at"
+                                )
+                        ->where('rodada_id', $rodada_id)
+                        ->orderBy('created_at', 'DESC')
+                        ->with('usuario')
+                        ->with('jogoAposta')
+                        ->get();
 
-    // }
+            $ranking = [];
+
+            foreach ($apostas as $key => $aposta) {
+                $rank = new Rank();
+                $rank->nome = $aposta->usuario->nome.' '.$aposta->usuario->sobrenome;
+                $rank->celular = $aposta->usuario->celular;
+                return response()->json($aposta, 200);
+                foreach ($aposta->jogo_aposta as $key => $jogo) {
+                    $result = $jogo->equipe_casa - $jogo->equipe_visitante;
+                    if ($result = 0) {
+                        $rank->ponto += 1;
+                    }
+                    if ($result > 0) {
+                        if ($jogo->equipe_casa == $jogo->pivot->equipe_id) {
+                            $rank->ponto += 1;
+                        }
+                    }
+                }
+                array_push($ranking, $rank);
+            }
+
+            return response()->json($apostas, 200);
+            
+        } catch(\Illuminate\Database\QueryException $e) {
+            return response()->json(['error' => 'Ocorreu um problema ao buscar ao ranking da rodada'], 500);
+        }
+
+    }
 }

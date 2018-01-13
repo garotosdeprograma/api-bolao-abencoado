@@ -15,6 +15,12 @@ class CreateJogoApostaTable extends Migration
     {
         Schema::create('jogo_aposta', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('aposta_id')->unsigned();
+            $table->foreign('aposta_id')->references('id')->on('apostas');
+            $table->integer('jogo_id')->unsigned();
+            $table->foreign('jogo_id')->references('id')->on('jogos');
+            $table->integer('equipe_id')->unsigned();
+            $table->foreign('equipe_id')->references('id')->on('equipes');
             $table->timestamps();
         });
     }

@@ -78,7 +78,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             
             $router->get('', 'ApostaController@buscar');
             
-            $router->get('{id}', 'ApostaController@buscarPorId');
+            $router->get('ranking/{rodada_id}', 'ApostaController@ranking');
         });
     
     $router->put('/usuario/{id}', 'UsuarioController@edit');

@@ -33,9 +33,9 @@ class Aposta extends Model
      *
      * @var function
      */
-    public function users()
+    public function usuario()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Usuario');
     }
 
     /**

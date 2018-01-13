@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateApostasTable extends Migration
+class CreateCheckApostaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateApostasTable extends Migration
      */
     public function up()
     {
-        Schema::create('apostas', function (Blueprint $table) {
+        Schema::create('check_aposta', function (Blueprint $table) {
             $table->increments('id');
-            $table->boolean('aposta_pago')->default(false);
-            $table->decimal('premio',10,2)->nullable();
-            $table->integer('usuario_id')->unsigned();
-            $table->foreign('usuario_id')->references('id')->on('usuarios');
             $table->integer('rodada_id')->unsigned();
             $table->foreign('rodada_id')->references('id')->on('rodadas');
+            $table->string('chave_aposta');
+            $table->unique(['rodada_id', 'chave_aposta']);
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ class CreateApostasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('apostas');
+        Schema::dropIfExists('check_aposta');
     }
 }
