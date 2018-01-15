@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\JWTAuth;
+use Validator;
 
 class AuthController extends Controller
 {
@@ -21,14 +22,20 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $this->validate($request, [
-            'email'    => 'required|email|max:255',
-            'password' => 'required',
+            'email' => 'required | email | max:255',
+            'password' => 'required ',
+        ], $message = [
+            'password.required' => 'O campo senha é obrigatório'
         ]);
+
+        // if ($validator->fails()) {
+        //     return response()->json(['error' => $validator->errors()]);
+        // }
 
         try {
 
-            if (! $token = $this->jwt->attempt($request->only('email', 'password'))) {
-                return response()->json(['user_not_found'], 404);
+            if (!$token = $this->jwt->attempt($request->only('email', 'password'))) {
+                return response()->json(['Email ou senha inválido'], 404);
             }
 
         } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
