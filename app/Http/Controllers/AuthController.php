@@ -28,10 +28,6 @@ class AuthController extends Controller
             'password.required' => 'O campo senha é obrigatório'
         ]);
 
-        // if ($validator->fails()) {
-        //     return response()->json(['error' => $validator->errors()]);
-        // }
-
         try {
 
             if (!$token = $this->jwt->attempt($request->only('email', 'password'))) {

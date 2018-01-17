@@ -65,8 +65,8 @@ class RodadaController extends Controller
 
         $this->validate($request, [
             'nome' => 'nullable | alpha_num | between:3,30',
-            'inicio' => 'date',
-            'fim' => 'date',
+            'inicio' => 'nullable | date',
+            'fim' => 'nullable | date',
         ]);
 
         $rodadas = Rodada::select(
