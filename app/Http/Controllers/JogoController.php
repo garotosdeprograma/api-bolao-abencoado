@@ -9,6 +9,7 @@ use Validator;
 use App\Jogo;
 use App\Campeonato;
 use App\Equipe;
+use Carbon\Carbon;
 
 class JogoController extends Controller
 {
@@ -111,6 +112,8 @@ class JogoController extends Controller
 
     public function buscar(Request $request) {
 
+        // \print_r(Carbon::now());die;
+
         $jogos = Jogo::select('*');
 
         if ($request->input('campeonato_id') != null) {
@@ -140,6 +143,10 @@ class JogoController extends Controller
         if ($request->input('gol_visitante') != null) {
             $jogos = $jogos->where('gol_visitante', $request->input('gol_visitante'));
         }
+
+       
+        $jogos = $jogos->where('fim','>=', Carbon::now());
+        
 
         $jogos = $jogos->get();
 

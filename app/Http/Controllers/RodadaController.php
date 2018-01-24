@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Validator;
 use App\Rodada;
 
 class RodadaController extends Controller
@@ -30,17 +29,18 @@ class RodadaController extends Controller
     public function edit(Request $request, $id)
     {
 
-        $validator = Validator::make($request->all(), [
+        
+        $this->validate($request, [
             'nome' => 'nullable | alpha_num | between:3,30',
-            'inicio' => 'date | required_if:fim',
-            'fim' => 'date | after:inicio | required_if:inicio',
+            'inicio' => 'date',
+            'fim' => 'date | after:inicio',
         ]);
 
-        if (null == $id) {
-            return response()->json(['error' => 'Dados incompletos']);
-        }
+        $rodada = Rodada::find($id);
 
-        $rodada = Rodada::findOrFail($id);
+        if ($rodada == null) {
+            return response()->json(['error' => 'Rodada inexistente'], 404);
+        }
 
 
         if (null != $request->input('nome')) {
@@ -64,7 +64,7 @@ class RodadaController extends Controller
     public function buscar(Request $request) {
 
         $this->validate($request, [
-            'nome' => 'nullable | alpha_num | between:3,30',
+            'nome' => 'nullable | alpha_num',
             'inicio' => 'nullable | date',
             'fim' => 'nullable | date',
         ]);
@@ -90,11 +90,10 @@ class RodadaController extends Controller
             $rodadas->whereDate('fim', '<=', $request->input('fim'));
         }
 
-        $rodadas = $rodadas
-            ->orderBy('inicio', 'DESC')
-            ->paginate(10);
+        $rodadas = $rodadas->orderBy('inicio', 'ASC')
+                            ->paginate(10);
 
-        return response()->json(['rodadas' => $rodadas], 200);
+        return response()->json($rodadas, 200);
 
     }
 
