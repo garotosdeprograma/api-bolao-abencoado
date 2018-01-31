@@ -11,16 +11,35 @@ class CampeonatosTableSeeder extends Seeder
      */
     public function run()
     {
-        $seriaA = factory(App\Campeonato::class)->create([
-            'nome' => 'Seria A'
+        factory(App\Campeonato::class)->create([
+            'nome' => 'Seria A',
+            'tipo' => 'NACIONAL'
         ]);
 
-        $seriaB = factory(App\Campeonato::class)->create([
-            'nome' => 'Seria B'
+        factory(App\Campeonato::class)->create([
+            'nome' => 'Seria B',
+            'tipo' => 'NACIONAL'
         ]);
 
-        $seriaC = factory(App\Campeonato::class)->create([
-            'nome' => 'Seria C'
+        factory(App\Campeonato::class)->create([
+            'nome' => 'Seria C',
+            'tipo' => 'NACIONAL'
         ]);
+
+        factory(App\Campeonato::class)->create([
+            'nome' => 'Champions League',
+            'tipo' => 'INTERNACIONAL'
+        ]);
+
+        factory(App\Campeonato::class)->create([
+            'nome' => 'Premier  League',
+            'tipo' => 'INTERNACIONAL'
+        ]);
+
+        factory(App\Campeonato::class)->create([
+            'nome' => 'Premiere division',
+            'tipo' => 'INTERNACIONAL'
+        ]);
+
     }
 }

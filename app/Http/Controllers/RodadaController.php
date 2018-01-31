@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Rodada;
+use Carbon\Carbon;
 
 class RodadaController extends Controller
 {
@@ -28,7 +29,6 @@ class RodadaController extends Controller
 
     public function edit(Request $request, $id)
     {
-
         
         $this->validate($request, [
             'nome' => 'nullable | alpha_num | between:3,30',
@@ -95,6 +95,22 @@ class RodadaController extends Controller
 
         return response()->json($rodadas, 200);
 
+    }
+
+    public function buscarRodadasComJogos() {
+
+        $rodadas = Rodada::select(
+            'id',
+            'nome',
+            'inicio',
+            'fim'
+        );
+
+        $rodadas = $rodadas
+                            ->with(['jogos.equipeCasa', 'jogos.equipeVisitante'])
+                            ->get();
+
+        return response()->json($rodadas, 200);
     }
 
     public function buscarPorId($id) {

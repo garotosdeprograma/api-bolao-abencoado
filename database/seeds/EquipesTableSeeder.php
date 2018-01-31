@@ -189,5 +189,63 @@ class EquipesTableSeeder extends Seeder
         foreach ($equipes as $key => $equipe) {
             $campeonato->equipes()->attach($equipe, ['created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
         }
+
+        // Equipes Premier league
+
+        factory(App\Equipe::class)->create([
+            'nome' => 'Chelsea'
+        ]);
+
+        factory(App\Equipe::class)->create([
+            'nome' => 'Man City'
+        ]);
+
+        factory(App\Equipe::class)->create([
+            'nome' => 'Man United'
+        ]);
+
+        factory(App\Equipe::class)->create([
+            'nome' => 'Liverpool'
+        ]);
+
+        factory(App\Equipe::class)->create([
+            'nome' => 'Totthenam'
+        ]);
+
+        factory(App\Equipe::class)->create([
+            'nome' => 'Everton'
+        ]);
+
+        factory(App\Equipe::class)->create([
+            'nome' => 'Celtic Glasgow'
+        ]);
+
+        factory(App\Equipe::class)->create([
+            'nome' => 'Arsenal'
+        ]);
+
+        factory(App\Equipe::class)->create([
+            'nome' => 'New Castle'
+        ]);
+
+        factory(App\Equipe::class)->create([
+            'nome' => 'Westham'
+        ]);
+
+        factory(App\Equipe::class)->create([
+            'nome' => 'Cristal Palace'
+        ]);
+
+        factory(App\Equipe::class)->create([
+            'nome' => 'Watford'
+        ]);
+
+        $campeonato = Campeonato::find(4);
+        
+        $equipes = Equipe::select('id')->where('id', '>=', 37)->where('id', '<=', 48)->get();
+
+        foreach ($equipes as $key => $equipe) {
+            $campeonato->equipes()->attach($equipe, ['created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
+        }
     }
 }

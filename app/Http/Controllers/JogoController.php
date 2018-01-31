@@ -145,30 +145,31 @@ class JogoController extends Controller
         }
 
        
-        $jogos = $jogos->where('fim','>=', Carbon::now());
+        // $jogos = $jogos->where('fim','>=', Carbon::now());
         
 
-        $jogos = $jogos->get();
+        $jogos = $jogos->with(['rodada', 'campeonato', 'equipeVisitante', 'equipeCasa'])
+                        ->get();
 
-        $lista = [];
-        foreach ($jogos as $key => $value) {
-            $campeonato = Campeonato::find($value->campeonato_id);
-            if (!isset($lista[$campeonato->nome])) {
-                $equipeCasa = Equipe::select('id', 'nome')->where('id', $value->equipe_casa)->first();
-                $equipeVisitante = Equipe::select('id', 'nome')->where('id', $value->equipe_visitante)->first();
-                $value->equipe_casa = $equipeCasa;
-                $value->equipe_visitante = $equipeVisitante;
-                $lista[$campeonato->nome] = [$value];
-            } else {
-                $equipeCasa = Equipe::select('id', 'nome')->where('id', $value->equipe_casa)->first();
-                $equipeVisitante = Equipe::select('id', 'nome')->where('id', $value->equipe_visitante)->first();
-                $value->equipe_casa = $equipeCasa;
-                $value->equipe_visitante = $equipeVisitante;
-                array_push($lista[$campeonato->nome], $value); 
-            }
-        }
+        // $lista = [];
+        // foreach ($jogos as $key => $value) {
+        //     $campeonato = Campeonato::find($value->campeonato_id);
+        //     if (!isset($lista[$campeonato->nome])) {
+        //         $equipeCasa = Equipe::select('id', 'nome')->where('id', $value->equipe_casa)->first();
+        //         $equipeVisitante = Equipe::select('id', 'nome')->where('id', $value->equipe_visitante)->first();
+        //         $value->equipe_casa = $equipeCasa;
+        //         $value->equipe_visitante = $equipeVisitante;
+        //         $lista[$campeonato->nome] = [$value];
+        //     } else {
+        //         $equipeCasa = Equipe::select('id', 'nome')->where('id', $value->equipe_casa)->first();
+        //         $equipeVisitante = Equipe::select('id', 'nome')->where('id', $value->equipe_visitante)->first();
+        //         $value->equipe_casa = $equipeCasa;
+        //         $value->equipe_visitante = $equipeVisitante;
+        //         array_push($lista[$campeonato->nome], $value); 
+        //     }
+        // }
 
-        return response()->json(['jogos' => $lista], 200);
+        return response()->json($jogos, 200);
 
     }
 

@@ -11,21 +11,6 @@
 |
 */
 
-// Route::group([
-    
-//         'middleware' => 'api',
-//         'namespace' => 'App\Http\Controllers',
-//         'prefix' => 'auth'
-    
-//     ], function ($router) {
-    
-//         Route::post('login', 'AuthController@login');
-//         Route::post('logout', 'AuthController@logout');
-//         Route::post('refresh', 'AuthController@refresh');
-//         Route::post('me', 'AuthController@me');
-    
-//     });
-
 $router->group(['middleware' => 'auth'], function () use ($router) {
 
         $router->group(['prefix' => 'campeonato'], function () use ($router) {
@@ -87,6 +72,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
 $router->post('/auth/login', 'AuthController@login');
 $router->post('/auth/register', 'UsuarioController@cadastro');
+$router->get('rodada/jogos', 'RodadaController@buscarRodadasComJogos');
 
 $router->get('/', function () use ($router) {
     return $router->app->version();

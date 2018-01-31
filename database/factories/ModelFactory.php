@@ -49,9 +49,6 @@ $factory->define(App\Rodada::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Jogo::class, function (Faker\Generator $faker) {
     return [
-        'campeonato_id' => 1,
-        'equipe_casa' => $faker->numberBetween($min = 1, $max = 12),
-        'equipe_visitante' => $faker->numberBetween($min = 1, $max = 12),
         'inicio' => Carbon::now()->format('Y-m-d H:i:s'),
         'fim' => Carbon::now()->format('Y-m-d H:i:s'),
         'created_at' => Carbon::now()->format('Y-m-d H:i:s'),

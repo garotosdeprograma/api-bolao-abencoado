@@ -1,0 +1,59 @@
+[33mcommit 37078dd82cec0f358e099633ca5b419d8b905a14[m
+Author: Daouda <quieterkali@gmail.com>
+Date:   Wed Jan 24 01:47:47 2018 -0300
+
+    rodadas, campeonatos, jogos#1
+
+[33mcommit 1ce93ef68a400794ed550cbb74c049f435046d9e[m
+Author: Daouda <quieterkali@gmail.com>
+Date:   Wed Jan 17 02:28:11 2018 -0300
+
+    rodada & auth
+
+[33mcommit 4ab2ae6a8daf2e56b99b27822f7ba8f06b825b5a[m
+Author: Daouda <quieterkali@gmail.com>
+Date:   Mon Jan 15 14:02:03 2018 -0300
+
+    CORS configuration
+
+[33mcommit 34dd6afe1125c2033e1c831a2881075e721240e4[m
+Author: Daouda <quieterkali@gmail.com>
+Date:   Sat Jan 13 19:38:44 2018 -0300
+
+    functionalidade apostar
+
+[33mcommit 5b931ca83462ad810fdefa8f9c363e5e1d4e7138[m
+Author: Daouda <quieterkali@gmail.com>
+Date:   Wed Jan 10 03:35:16 2018 -0300
+
+    service in progress
+
+[33mcommit c1c0bfce529427af45e42506e592f822b76e3e76[m
+Author: Daouda <quieterkali@gmail.com>
+Date:   Mon Dec 4 05:19:50 2017 -0300
+
+    betting feature in progress #1
+
+[33mcommit 7d0c4d4bb23b38cc9c287570362b01e4e863cded[m
+Author: Daouda <quieterkali@gmail.com>
+Date:   Sun Dec 3 23:18:50 2017 -0300
+
+    seeding database #1
+
+[33mcommit a1e742a6160ebd01bd2a25c1382668b490c35346[m
+Author: Daouda <quieterkali@gmail.com>
+Date:   Sun Dec 3 12:04:21 2017 -0300
+
+    refactoring migration, models relationship #1
+
+[33mcommit 0115e110196eea212c25e3737c493b53cf435fb9[m
+Author: Daouda <quieterkali@gmail.com>
+Date:   Mon Nov 20 13:17:21 2017 -0300
+
+    second commit
+
+[33mcommit bd4b92bcbe3b5f057a91c0a7a8d754d8e3494ac4[m
+Author: Daouda <quieterkali@gmail.com>
+Date:   Sat Nov 18 02:10:52 2017 -0300
+
+    initial commit

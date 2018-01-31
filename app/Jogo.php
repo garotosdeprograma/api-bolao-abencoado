@@ -22,6 +22,10 @@ class Jogo extends Model
         'rodada_id'
     ];
 
+    protected $with = [
+        'campeonato'
+    ];
+
     /**
      * The attributes excluded from the model's JSON form.
      *
@@ -45,7 +49,7 @@ class Jogo extends Model
      */
     public function campeonato()
     {
-        return $this->hasOne('App\Campeonato');
+        return $this->belongsTo('App\Campeonato');
     }
 
     /**
@@ -57,13 +61,19 @@ class Jogo extends Model
     }
 
     /**
-     * Obter equipes do jogo.
+     * Obter equipe casa do jogo.
      */
-    public function equipes()
+    public function equipeCasa()
     {
-        return $this->hasMany('App\Equipe');
+        return $this->belongsTo('App\Equipe', 'equipe_casa');
     }
 
-
+    /**
+     * Obter equipe visitante do jogo.
+     */
+    public function equipeVisitante()
+    {
+        return $this->belongsTo('App\Equipe', 'equipe_visitante');
+    }
 
 }

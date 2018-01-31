@@ -16,6 +16,7 @@ class CreateCampeonatosTable extends Migration
         Schema::create('campeonatos', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nome');
+            $table->string('tipo');
             $table->timestamps();
         });
     }

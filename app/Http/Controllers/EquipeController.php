@@ -23,7 +23,7 @@ class EquipeController extends Controller
 
         $equipe->campeonatos()->attach($request->input('campeonato_id'));
         
-        return response()->json(['equipe' => $equipe], 200);
+        return response()->json($equipe, 200);
     }
 
     public function edit(Request $request, $id)
@@ -77,10 +77,9 @@ class EquipeController extends Controller
 
         $equipes = $equipes
                 ->with('campeonatos')
-                ->orderBy('nome')
-                ->get();
+                ->paginate(10);
 
-        return response()->json(['equipes' => $equipes], 200);
+        return response()->json($equipes, 200);
 
     }
 
