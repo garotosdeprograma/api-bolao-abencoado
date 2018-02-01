@@ -106,9 +106,9 @@ class RodadaController extends Controller
             'fim'
         );
 
-        $rodadas = $rodadas
-                            ->with(['jogos.equipeCasa', 'jogos.equipeVisitante'])
-                            ->get();
+        $rodadas = $rodadas->whereDate('fim', '<', Carbon::now('America/Fortaleza'))
+                    ->with(['jogos.equipeCasa', 'jogos.equipeVisitante'])
+                    ->get();
 
         return response()->json($rodadas, 200);
     }
