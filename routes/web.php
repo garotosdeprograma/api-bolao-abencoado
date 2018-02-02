@@ -20,6 +20,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             $router->put('{id}', 'CampeonatoController@edit');
             
             $router->get('', 'CampeonatoController@buscar');
+
+            $router->get('todos', 'CampeonatoController@buscarTodos');
             
             $router->get('{id}', 'CampeonatoController@buscarPorId');
         });

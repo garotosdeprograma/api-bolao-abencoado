@@ -13,8 +13,16 @@ class Equipe extends Model
      * @var array
      */
     protected $fillable = [
-        'nome'
+        'nome',
+        'logo'
     ];
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $with = ['campeonatos'];
 
     /**
      * The attributes excluded from the model's JSON form.

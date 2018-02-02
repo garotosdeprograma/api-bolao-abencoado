@@ -16,6 +16,7 @@ class CreateEquipesTable extends Migration
         Schema::create('equipes', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nome');
+            $table->string('logo')->nullable();
             $table->string('estado')->nullable();
             $table->string('cidade')->nullable();
             $table->string('estadio')->nullable();

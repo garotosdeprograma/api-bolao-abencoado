@@ -69,6 +69,19 @@ class CampeonatoController extends Controller
 
     }
 
+    public function buscarTodos(Request $request) {
+
+        $campeonatos = Campeonato::select(
+                        'id',
+                        'nome'
+                        )
+                        ->orderBy('nome', 'ASC')
+                        ->get();
+
+        return response()->json($campeonatos, 200);
+
+    }
+
     public function buscarPorId($id) {
 
         $this->validate($request, [

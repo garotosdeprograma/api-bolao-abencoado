@@ -14,14 +14,15 @@ class EquipeController extends Controller
     {
         $this->validate($request, [
             'nome' => 'required | alpha_spaces | between:3,50',
-            'campeonato_id' => 'required | integer'
+            'logo' =>  ['nullable', 'between:10,60', 'regex:/^[a-zA-Z.\/]/'],
+            'campeonato' => 'required | array | max:5'
         ]);
 
         $equipe = new Equipe();
         $equipe->nome = $request->input('nome');
         $equipe->save();
 
-        $equipe->campeonatos()->attach($request->input('campeonato_id'));
+        $equipe->campeonatos()->attach($request->input('campeonato'));
         
         return response()->json($equipe, 200);
     }
@@ -77,6 +78,7 @@ class EquipeController extends Controller
 
         $equipes = $equipes
                 ->with('campeonatos')
+                ->orderBy('nome', 'ASC')
                 ->paginate(10);
 
         return response()->json($equipes, 200);
