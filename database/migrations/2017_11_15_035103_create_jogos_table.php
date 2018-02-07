@@ -19,7 +19,6 @@ class CreateJogosTable extends Migration
             $table->integer('gol_casa')->unsigned()->default(0);
             $table->integer('gol_visitante')->unsigned()->default(0);
             $table->timestamp('inicio');
-            $table->timestamp('fim');
             $table->timestamps();
         });
     }

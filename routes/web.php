@@ -11,7 +11,10 @@
 |
 */
 
-$router->group(['middleware' => 'auth'], function () use ($router) {
+$router->post('/auth/login', 'AuthController@login');
+$router->post('/auth/register', 'UsuarioController@cadastro');
+
+$router->group(['middleware' => 'auth', ['except' => 'buscarJogosPorIdRodada']], function () use ($router) {
 
         $router->group(['prefix' => 'campeonato'], function () use ($router) {
 
@@ -24,6 +27,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             $router->get('todos', 'CampeonatoController@buscarTodos');
             
             $router->get('{id}', 'CampeonatoController@buscarPorId');
+
+            $router->get('equipes', 'CampeonatoController@buscarEquipePorCampeonato');
         });
 
         $router->group(['prefix' => 'equipe'], function () use ($router) {
@@ -35,6 +40,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             $router->get('', 'EquipeController@buscar');
             
             $router->get('{id}', 'EquipeController@buscarPorId');
+
         });
 
         $router->group(['prefix' => 'rodada'], function () use ($router) {
@@ -46,6 +52,9 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             $router->get('', 'RodadaController@buscar');
             
             $router->get('{id}', 'RodadaController@buscarPorId');
+            
+            $router->get('jogos', 'RodadaController@buscarJogosPorRodada');
+            
         });
 
         $router->group(['prefix' => 'jogo'], function () use ($router) {
@@ -72,13 +81,9 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
 });
 
-$router->post('/auth/login', 'AuthController@login');
-$router->post('/auth/register', 'UsuarioController@cadastro');
-$router->get('rodada/jogos', 'RodadaController@buscarRodadasComJogos');
-
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
+// $router->get('/', function () use ($router) {
+//     return $router->app->version();
+// });
 
 
 

@@ -50,7 +50,6 @@ $factory->define(App\Rodada::class, function (Faker\Generator $faker) {
 $factory->define(App\Jogo::class, function (Faker\Generator $faker) {
     return [
         'inicio' => Carbon::now()->format('Y-m-d H:i:s'),
-        'fim' => Carbon::now()->format('Y-m-d H:i:s'),
         'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
         'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
     ];

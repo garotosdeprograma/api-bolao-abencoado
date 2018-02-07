@@ -97,7 +97,10 @@ class RodadaController extends Controller
 
     }
 
-    public function buscarRodadasComJogos() {
+    public function buscarJogosPorRodada(Request $request) {
+
+        
+        $id = $request->query('id');
 
         $rodadas = Rodada::select(
             'id',
@@ -106,9 +109,13 @@ class RodadaController extends Controller
             'fim'
         );
 
-        $rodadas = $rodadas->whereDate('fim', '<', Carbon::now('America/Fortaleza'))
-                    ->with(['jogos.equipeCasa', 'jogos.equipeVisitante'])
-                    ->get();
+        if(isset($id) && $id != null) {
+            $rodadas = $rodadas->where('id', $id);
+        }else{
+            $rodadas = $rodadas->whereDate('fim', '<', Carbon::now('America/Fortaleza'));
+        }
+        $rodadas = $rodadas->with(['jogos.equipeCasa', 'jogos.equipeVisitante'])
+                            ->get();
 
         return response()->json($rodadas, 200);
     }
@@ -124,4 +131,21 @@ class RodadaController extends Controller
         return response()->json(['rodada' => $rodada], 200);
 
     }
+
+    // public function buscarJogosPorRodada(Request $request) {
+
+    //     $id = $request->query('id');
+
+    //     if (!is_numeric($id)) {
+    //         return response()->json(['error' => 'Id inválido'], 404);
+    //     }
+        
+    //     $rodada = Rodada::select('*')
+    //     ->where('id', $id)                
+    //     ->with(['jogos.equipeCasa', 'jogos.equipeVisitante'])
+    //     ->get();
+
+    //     return response()->json(['rodada' => $rodada], 200);
+
+    // }
 }

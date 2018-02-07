@@ -103,6 +103,19 @@ class CampeonatoController extends Controller
         return response()->json(['campeonatos' => $campeonato, 200]);
 
     }
+
+    public function buscarEquipePorCampeonato(Request $request) {
+        $this->validate($request, [
+            'id' => 'required | numeric | max:100'
+        ]);
+
+        $campeonatos= Campeonato::select('*')->where('id', $request
+                            ->query('id'))
+                            ->with('equipes')
+                            ->first();
+
+        return response()->json($campeonatos, 200);
+    }
 }
 
 

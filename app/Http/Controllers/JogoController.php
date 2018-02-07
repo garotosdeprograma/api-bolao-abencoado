@@ -21,8 +21,7 @@ class JogoController extends Controller
             'equipe_visitante' => 'integer | max:1000',
             'campeonato_id' => 'integer | max:100',
             'rodada_id' => 'integer | max:1000000',
-            'inicio' => 'date | before:fim',
-            'fim' => 'date',
+            'inicio' => 'required | date',
             'gol_casa' => 'integer | max: 20',
             'gol_visitante' => 'integer | max: 20',
         ]);
@@ -32,11 +31,8 @@ class JogoController extends Controller
         $jogo->campeonato_id = $request->input('campeonato_id');
         $jogo->rodada_id = $request->input('rodada_id');
         $jogo->inicio = $request->input('inicio');
-        $jogo->fim = $request->input('fim');
         $jogo->equipe_casa = $request->input('equipe_casa');
-        $jogo->gol_casa = $request->input('gol_casa');
         $jogo->equipe_visitante = $request->input('equipe_visitante');
-        $jogo->gol_visitante = $request->input('gol_visitante');
         $jogo->save();
 
         return response()->json(['jogo' => $jogo], 201);

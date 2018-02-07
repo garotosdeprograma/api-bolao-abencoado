@@ -20,6 +20,7 @@ class EquipeController extends Controller
 
         $equipe = new Equipe();
         $equipe->nome = $request->input('nome');
+        $equipe->logo = $request->input('logo');
         $equipe->save();
 
         $equipe->campeonatos()->attach($request->input('campeonato'));
@@ -69,7 +70,8 @@ class EquipeController extends Controller
 
         $equipes = Equipe::select(
             'id',
-            'nome'
+            'nome',
+            'logo'
         );
 
         if ($request->query('nome') != null) {
