@@ -16,21 +16,32 @@ class ApostaController extends Controller
 {
     public function cadastro(Request $request)
     {
+        $jogos = $request->input('jogos');
+
+        foreach ($jogos as $key => $value) {
+            print_r($value['time']);
+            print_r($value['jogo']);
+        }
+        die;
 
         $this->validate($request, [
             'usuario_id' => 'required | integer',
             'rodada_id' => 'required | integer',
-            'premio' => 'required | numeric',
-            'jogo_1' => 'required | integer',
-            'jogo_2' => 'required | integer',
-            'jogo_3' => 'required | integer',
-            'jogo_4' => 'required | integer',
-            'time_1' => 'required | integer',
-            'time_2' => 'required | integer',
-            'time_3' => 'required | integer',
-            'time_4' => 'required | integer',
-            'aposta_pago' => 'required | boolean',
+            'jogos' => 'required | array | size:4'
+            // 'premio' => 'required | numeric',
+            // 'jogo_1' => 'required | integer',
+            // 'jogo_2' => 'required | integer',
+            // 'jogo_3' => 'required | integer',
+            // 'jogo_4' => 'required | integer',
+            // 'time_1' => 'required | integer',
+            // 'time_2' => 'required | integer',
+            // 'time_3' => 'required | integer',
+            // 'time_4' => 'required | integer',
+            // 'aposta_pago' => 'required | boolean',
         ]);
+
+
+
 
         $jogo1 = Jogo::find($request->input('jogo_1'));
         if ($jogo1 == null) {

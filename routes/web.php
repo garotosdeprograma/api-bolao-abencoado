@@ -53,8 +53,6 @@ $router->group(['middleware' => 'auth', ['except' => 'buscarJogosPorIdRodada']],
             
             $router->get('{id}', 'RodadaController@buscarPorId');
             
-            $router->get('jogos', 'RodadaController@buscarJogosPorRodada');
-            
         });
 
         $router->group(['prefix' => 'jogo'], function () use ($router) {
@@ -80,6 +78,8 @@ $router->group(['middleware' => 'auth', ['except' => 'buscarJogosPorIdRodada']],
     $router->put('/usuario/{id}', 'UsuarioController@edit');
 
 });
+
+$router->get('rodada/jogos', 'RodadaController@buscarJogosPorRodada');
 
 // $router->get('/', function () use ($router) {
 //     return $router->app->version();
