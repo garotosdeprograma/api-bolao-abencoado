@@ -11,10 +11,7 @@
 |
 */
 
-$router->post('/auth/login', 'AuthController@login');
-$router->post('/auth/register', 'UsuarioController@cadastro');
-
-$router->group(['middleware' => 'auth', ['except' => 'buscarJogosPorIdRodada']], function () use ($router) {
+$router->group(['middleware' => 'auth'], function () use ($router) {
 
         $router->group(['prefix' => 'campeonato'], function () use ($router) {
 
@@ -28,7 +25,6 @@ $router->group(['middleware' => 'auth', ['except' => 'buscarJogosPorIdRodada']],
             
             $router->get('{id}', 'CampeonatoController@buscarPorId');
 
-            $router->get('equipes', 'CampeonatoController@buscarEquipePorCampeonato');
         });
 
         $router->group(['prefix' => 'equipe'], function () use ($router) {
@@ -79,11 +75,14 @@ $router->group(['middleware' => 'auth', ['except' => 'buscarJogosPorIdRodada']],
 
 });
 
-$router->get('rodada/jogos', 'RodadaController@buscarJogosPorRodada');
+$router->group(['prefix' => 'externo'], function () use ($router) {
+    $router->get('campeonato/equipes', 'CampeonatoController@buscarEquipePorCampeonato');
+    $router->get('rodada/jogos', 'RodadaController@buscarJogosPorRodada');
+});
+
+$router->post('/auth/login', 'AuthController@login');
+$router->post('/auth/register', 'UsuarioController@cadastro');  
 
 // $router->get('/', function () use ($router) {
 //     return $router->app->version();
 // });
-
-
-

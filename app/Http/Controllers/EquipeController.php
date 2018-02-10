@@ -33,8 +33,8 @@ class EquipeController extends Controller
 
         $this->validate($request, [
             'nome' => 'alpha_spaces | between:3,50',
-            'campeonato_id' => 'integer',
-            'detach' => 'integer'
+            'campeonato' => 'required | array | max:5',
+            'logo' =>  ['nullable', 'between:10,60', 'regex:/^[a-zA-Z.\/]/']
         ]);
 
         if ($id == null) {
@@ -47,6 +47,10 @@ class EquipeController extends Controller
             return response()->json(['Error' => 'equipe não encontrado'], 400);
         }
 
+        if ($request->input('logo') != null) {
+            $equipe->logo = $request->input('logo');
+        }
+
         if ($request->input('nome') != null) {
             $equipe->nome = $request->input('nome');
         }
@@ -57,8 +61,10 @@ class EquipeController extends Controller
 
         $equipe->save();
 
-        if ($request->input('campeonato_id') != null) {
-            $equipe->campeonatos()->attach($request->input('campeonato_id'));
+        $campeonato = $request->input('campeonato');
+
+        if (count($campeonato) > 0) {
+            $equipe->campeonatos()->attach($request->input('campeonato'));
         }
 
         
