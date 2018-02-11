@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             UsersTableSeeder::class,
-            CampeonatosTableSeeder::class,
-            EquipesTableSeeder::class,
-            RodadasTableSeeder::class,
-            JogosTableSeeder::class
+            // CampeonatosTableSeeder::class,
+            // EquipesTableSeeder::class,
+            // RodadasTableSeeder::class,
+            // JogosTableSeeder::class
         ]);
 
         Model::reguard();

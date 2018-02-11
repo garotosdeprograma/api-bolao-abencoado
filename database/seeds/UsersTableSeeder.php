@@ -11,12 +11,13 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Usuario::class, 2)->create([
-            'tipo_usuario' => 'ADMIN'
+        factory(App\Usuario::class, 1)->create([
+            'tipo_usuario' => 'ADMIN',
+            'celular' => 999998888
         ]);
 
-        factory(App\Usuario::class, 20)->create([
-            'tipo_usuario' => 'USUARIO'
-        ]);
+        // factory(App\Usuario::class, 20)->create([
+        //     'tipo_usuario' => 'USUARIO'
+        // ]);
     }
 }

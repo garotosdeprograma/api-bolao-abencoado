@@ -15,8 +15,6 @@ class CreateApostasTable extends Migration
     {
         Schema::create('apostas', function (Blueprint $table) {
             $table->increments('id');
-            $table->boolean('aposta_pago')->default(false);
-            $table->decimal('premio',10,2)->nullable();
             $table->integer('usuario_id')->unsigned();
             $table->foreign('usuario_id')->references('id')->on('usuarios');
             $table->integer('rodada_id')->unsigned();

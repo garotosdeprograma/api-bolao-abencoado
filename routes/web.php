@@ -11,6 +11,15 @@
 |
 */
 
+$router->group(['prefix' => 'aposta'], function () use ($router) {
+            
+    $router->post('', 'ApostaController@cadastro');
+    
+    $router->get('', 'ApostaController@buscar');
+    
+    $router->get('ranking/{rodada_id}', 'ApostaController@ranking');
+});
+
 $router->group(['middleware' => 'auth'], function () use ($router) {
 
         $router->group(['prefix' => 'campeonato'], function () use ($router) {
@@ -60,15 +69,6 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             $router->get('', 'JogoController@buscar');
             
             $router->get('{id}', 'JogoController@buscarPorId');
-        });
-
-        $router->group(['prefix' => 'aposta'], function () use ($router) {
-            
-            $router->post('', 'ApostaController@cadastro');
-            
-            $router->get('', 'ApostaController@buscar');
-            
-            $router->get('ranking/{rodada_id}', 'ApostaController@ranking');
         });
     
     $router->put('/usuario/{id}', 'UsuarioController@edit');

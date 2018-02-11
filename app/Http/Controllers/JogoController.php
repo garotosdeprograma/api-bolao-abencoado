@@ -20,7 +20,7 @@ class JogoController extends Controller
             'estadio' => 'alpha_spaces | between:3, 100',
             'equipe_casa' => 'integer | max:1000',
             'equipe_visitante' => 'integer | max:1000',
-            'campeonato_id' => 'integer | max:100',
+            'campeonato_id' => 'required | integer | max:100',
             'rodada_id' => 'integer | max:1000000',
             'inicio' => 'required | date_format:Y-m-d H:i',
             'gol_casa' => 'integer | max: 20',

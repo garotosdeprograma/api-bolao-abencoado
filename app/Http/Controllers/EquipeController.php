@@ -32,7 +32,7 @@ class EquipeController extends Controller
     {
 
         $this->validate($request, [
-            'nome' => 'alpha_spaces | between:3,50',
+            'nome' => 'required | alpha_spaces | between:3,50',
             'campeonato' => 'required | array | max:5',
             'logo' =>  ['nullable', 'between:10,60', 'regex:/^[a-zA-Z.\/]/']
         ]);
