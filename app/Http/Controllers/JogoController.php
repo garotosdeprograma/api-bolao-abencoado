@@ -7,15 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Validator;
 use App\Jogo;
+use App\Rodada;
 use App\Campeonato;
 use App\Equipe;
 use Carbon\Carbon;
-use App\Http\Controllers\RodadaController;
 
 class JogoController extends Controller
 {
-    public function cadastro(Request $request, RodadaController $rodadaController)
+    public function cadastro(Request $request)
     {
+
         $this->validate($request, [
             'id' => 'nullable | integer',
             'estadio' => 'alpha_spaces | between:3, 100',
@@ -29,14 +30,16 @@ class JogoController extends Controller
         ]);
 
         $rodada_id = $request->input('rodada_id');
-        $rodada = Jogo::find($rodada_id);
+        $rodada = Rodada::select('id','inicio','fim')->where('id', $rodada_id)->first();
         $inicio = $request->input('inicio');
 
-    //     if ($rodada == null) {
-    //         return response()->json(['Error' => 'Dados inválidos']);
-    // } else if (!(strtotime($inicio) - strtotime($rodada->inicio) && !(strtotime($inicio + 5400) - strtotime($rodada->fim)) <= 0)) {
-    //         return response()->json(['error' => 'Dados inválidos']);
-    //     }
+        if ($rodada == null) {
+            return response()->json(['Error' => 'Dados inválidos'], 404);
+        }
+
+        if ((strtotime($inicio) - strtotime($rodada->inicio)) <= 0 || ((strtotime($inicio) + 5400) - (strtotime($rodada->fim) + 86400) ) >= 0) {
+            return response()->json(['error' => 'Dados inválidos'], 404);
+        }
 
         $gol_casa = $request->input('gol_casa');
         $gol_visitante = $request->input('gol_visitante');

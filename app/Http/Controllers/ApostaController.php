@@ -22,7 +22,6 @@ class ApostaController extends Controller
 
         $this->validate($request, [
             'telefone' => 'required | integer | digits_between:9,11',
-            // 'usuario_id' => 'required | integer | digits_between:1,10',
             'nome' => ['nullable', 'regex:/^[\pL\s]+$/u'],
             'rodada_id' => 'required | integer',
             'times' => 'required | array | size:4'

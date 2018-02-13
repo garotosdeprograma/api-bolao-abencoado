@@ -120,8 +120,11 @@ class RodadaController extends Controller
         }else{
             $rodadas = $rodadas->whereDate('fim', '>', Carbon::now('America/Fortaleza'));
         }
-        $rodadas = $rodadas->with(['jogos.equipeCasa', 'jogos.equipeVisitante'])
-                            ->get();
+        $rodadas = $rodadas->with(['jogos.equipeCasa', 'jogos.equipeVisitante']);
+
+        $rodadas = $rodadas->with(['jogos' => function($query) {
+            $query->whereDate('inicio', '>', Carbon::now('America/Fortaleza'));
+        }])->get();
 
         return $rodadas;
     } 
@@ -134,6 +137,34 @@ class RodadaController extends Controller
         
         return response()->json($rodadas, 200);
     }
+
+    // private function jogosRodada($id) {
+    //     $rodadas = Rodada::select(
+    //         'id',
+    //         'nome',
+    //         'inicio',
+    //         'fim'
+    //     );
+
+    //     if(isset($id) && $id != null) {
+    //         $rodadas = $rodadas->where('id', $id);
+    //     }else{
+    //         $rodadas = $rodadas->whereDate('fim', '>', Carbon::now('America/Fortaleza'));
+    //     }
+    //     $rodadas = $rodadas->with(['jogos.equipeCasa', 'jogos.equipeVisitante'])
+    //                         ->get();
+
+    //     return $rodadas;
+    // } 
+
+    // public function buscarJogosPorRodada(Request $request) {
+        
+    //     $id = $request->query('id');
+
+    //     $rodadas = $this->jogosRodada($id);
+        
+    //     return response()->json($rodadas, 200);
+    // }
 
     public function buscarPorId($id) {
 
