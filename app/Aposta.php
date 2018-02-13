@@ -13,8 +13,6 @@ class Aposta extends Model
      * @var array
      */
     protected $fillable = [
-        'pagamento',
-        'aposta_pago',
         'jogo_id',
         'usuario_id'
     ];
@@ -44,6 +42,16 @@ class Aposta extends Model
      * @var function
      */
     public function jogoAposta() {
-        return $this->belongsToMany('App\Jogo', 'jogo_aposta', 'aposta_id', 'jogo_id')->withPivot('id','equipe_id');
+        return $this->belongsToMany('App\Jogo', 'jogo_aposta', 'aposta_id', 'jogo_id');
+    }
+
+
+    /**
+     * Defining many to many relationship with App\JogoAposta.
+     *
+     * @var function
+     */
+    public function equipeInAposta() {
+        return $this->hasMany('App\ApostaJogo');
     }
 }

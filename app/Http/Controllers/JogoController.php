@@ -10,10 +10,11 @@ use App\Jogo;
 use App\Campeonato;
 use App\Equipe;
 use Carbon\Carbon;
+use App\Http\Controllers\RodadaController;
 
 class JogoController extends Controller
 {
-    public function cadastro(Request $request)
+    public function cadastro(Request $request, RodadaController $rodadaController)
     {
         $this->validate($request, [
             'id' => 'nullable | integer',
@@ -26,6 +27,16 @@ class JogoController extends Controller
             'gol_casa' => 'integer | max: 20',
             'gol_visitante' => 'integer | max: 20',
         ]);
+
+        $rodada_id = $request->input('rodada_id');
+        $rodada = Jogo::find($rodada_id);
+        $inicio = $request->input('inicio');
+
+    //     if ($rodada == null) {
+    //         return response()->json(['Error' => 'Dados inválidos']);
+    // } else if (!(strtotime($inicio) - strtotime($rodada->inicio) && !(strtotime($inicio + 5400) - strtotime($rodada->fim)) <= 0)) {
+    //         return response()->json(['error' => 'Dados inválidos']);
+    //     }
 
         $gol_casa = $request->input('gol_casa');
         $gol_visitante = $request->input('gol_visitante');
@@ -121,8 +132,6 @@ class JogoController extends Controller
 
     public function buscar(Request $request) {
 
-        // \print_r(Carbon::now());die;
-
         $jogos = Jogo::select('*');
 
         if ($request->input('campeonato_id') != null) {
@@ -152,31 +161,9 @@ class JogoController extends Controller
         if ($request->input('gol_visitante') != null) {
             $jogos = $jogos->where('gol_visitante', $request->input('gol_visitante'));
         }
-
-       
-        // $jogos = $jogos->where('fim','>=', Carbon::now());
         
-
         $jogos = $jogos->with(['rodada', 'campeonato', 'equipeVisitante', 'equipeCasa'])
                         ->get();
-
-        // $lista = [];
-        // foreach ($jogos as $key => $value) {
-        //     $campeonato = Campeonato::find($value->campeonato_id);
-        //     if (!isset($lista[$campeonato->nome])) {
-        //         $equipeCasa = Equipe::select('id', 'nome')->where('id', $value->equipe_casa)->first();
-        //         $equipeVisitante = Equipe::select('id', 'nome')->where('id', $value->equipe_visitante)->first();
-        //         $value->equipe_casa = $equipeCasa;
-        //         $value->equipe_visitante = $equipeVisitante;
-        //         $lista[$campeonato->nome] = [$value];
-        //     } else {
-        //         $equipeCasa = Equipe::select('id', 'nome')->where('id', $value->equipe_casa)->first();
-        //         $equipeVisitante = Equipe::select('id', 'nome')->where('id', $value->equipe_visitante)->first();
-        //         $value->equipe_casa = $equipeCasa;
-        //         $value->equipe_visitante = $equipeVisitante;
-        //         array_push($lista[$campeonato->nome], $value); 
-        //     }
-        // }
 
         return response()->json($jogos, 200);
 

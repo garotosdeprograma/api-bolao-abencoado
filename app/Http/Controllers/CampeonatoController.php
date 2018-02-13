@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Campeonato;
 
@@ -11,11 +12,13 @@ class CampeonatoController extends Controller
     public function cadastro(Request $request)
     {
         $this->validate($request, [
-            'nome' => 'required | between:4,100 | alpha_spaces'
+            'nome' => 'required | between:4,100 | alpha_spaces',
+            'tipo' => ['required', Rule::in(['NACIONAL', 'INTERNACIONAL'])]
         ]);
 
         $campeonato = new Campeonato();
         $campeonato->nome = $request->input('nome');
+        $campeonato->tipo = $request->input('tipo');
         $campeonato->save();
 
         return response()->json(['campeonato' => $campeonato], 200);
@@ -56,6 +59,7 @@ class CampeonatoController extends Controller
         $campeonatos = Campeonato::select(
                         'id',
                         'nome',
+                        'tipo',
                         'created_at', 
                         'updated_at'
                         );

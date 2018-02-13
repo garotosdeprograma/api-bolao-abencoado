@@ -13,6 +13,7 @@ use App\Equipe;
 use App\ApostaJogo;
 use App\Usuario;
 use App\CheckAposta;
+use App\ApostaTO;
 
 class ApostaController extends Controller
 {
@@ -119,28 +120,64 @@ class ApostaController extends Controller
         return response()->json(['aposta' => $aposta], 201);
     }
 
+    private function getApostas($ids) {
+        $apostas = DB::table('apostas')
+            ->join('usuarios', 'apostas.usuario_id', '=', 'usuarios.id')
+            ->join('jogo_aposta', 'apostas.id', '=', 'jogo_aposta.aposta_id')
+            ->join('equipes', 'jogo_aposta.equipe_id', '=', 'equipes.id')
+            ->join('rodadas', 'apostas.rodada_id','=','rodadas.id')
+            ->select('apostas.id','apostas.created_at','usuarios.nome','usuarios.celular', 'rodadas.id as rodadaId',
+            'usuarios.nome','equipes.nome AS equipe', 'rodadas.nome AS rodada');
+            if (isset($ids)) {
+                $apostas = $apostas->where('rodadas.id',  $ids)
+                ->get();
+            } else {
+                $apostas = $apostas->get();
+            }
+        return $apostas;
+    }
+
+
+
     public function buscar(Request $request) {
 
         $this->validate($request, [
-            'nome' => 'nullable | max:30'
+            'nome' => 'nullable | max:30',
+            'ids' => 'nullable | integer | digits_between:1,6'
         ]);
 
+        $ids = json_decode($request->input('ids'));
+
         try {
-            $apostas = Aposta::select('*');
             
-            if (null != $request->input('nome')) {
-                $aposta->where('rodada_id', $rodada_id);
+            $apostas = $this->getApostas($ids);
+            
+            $result = [];
+            foreach ($apostas as $key => $value) {
+                $isExist = array_key_exists($value->id, $result);
+                if ($isExist) {
+                    array_push($apostaTO->equipes, $value->equipe);
+                } else {
+                    $apostaTO = new ApostaTO();
+                    $apostaTO->id = $value->id;
+                    $apostaTO->nome = $value->nome;
+                    $apostaTO->rodada = $value->rodada;
+                    $apostaTO->created_at = $value->created_at;
+                    $apostaTO->celular = $value->celular;
+                    array_push($apostaTO->equipes, $value->equipe);
+                    $result[$value->id] = $apostaTO;
+                }
             }
 
-            $apostas = $apostas
-                        ->orderBy('created_at', 'DESC')
-                        ->with(['jogoAposta', 'usuario'])
-                        ->paginate();
-        } catch(\Illuminate\Database\QueryException $e) {
+            $transformedResult = [];
+            foreach ($result as $key => $value) {
+                array_push($transformedResult, $value);
+            }
+        } catch(Exception $e) {
             return response()->json(['error' => 'Ocorreu um problema ao buscar as apostas'], 500);
         }
 
-        return response()->json($apostas, 200);
+        return response()->json($transformedResult, 200);
 
     }
 
@@ -152,46 +189,28 @@ class ApostaController extends Controller
 
         try {
 
-            $apostas = Aposta::select(  "id",
-                                    'aposta_pago',
-                                    'usuario_id',    
-                                    'premio',
-                                    'rodada_id',
+            $ranking = Aposta::select(  "id", 
+                                    "pontuacao",
+                                    "saldo_gol",
                                     "created_at",
-                                    "updated_at"
+                                    "usuario_id"
                                 )
                         ->where('rodada_id', $rodada_id)
-                        ->orderBy('created_at', 'DESC')
+                        ->orderBy('pontuacao', 'DESC')
+                        ->orderBy('saldo_gol', 'DESC')
+                        ->orderBy('created_at', 'ASC')
                         ->with('usuario')
-                        ->with('jogoAposta')
                         ->get();
 
-            $ranking = [];
-
-            foreach ($apostas as $key => $aposta) {
-                $rank = new Rank();
-                $rank->nome = $aposta->usuario->nome.' '.$aposta->usuario->sobrenome;
-                $rank->celular = $aposta->usuario->celular;
-                return response()->json($aposta, 200);
-                foreach ($aposta->jogo_aposta as $key => $jogo) {
-                    $result = $jogo->equipe_casa - $jogo->equipe_visitante;
-                    if ($result = 0) {
-                        $rank->ponto += 1;
-                    }
-                    if ($result > 0) {
-                        if ($jogo->equipe_casa == $jogo->pivot->equipe_id) {
-                            $rank->ponto += 1;
-                        }
-                    }
-                }
-                array_push($ranking, $rank);
-            }
-
-            return response()->json($apostas, 200);
+            return $ranking;
             
         } catch(\Illuminate\Database\QueryException $e) {
             return response()->json(['error' => 'Ocorreu um problema ao buscar ao ranking da rodada'], 500);
         }
+    }
 
+    public function getApostaPorId($id) {
+        $aposta = Aposta::find($id);
+        return $aposta;
     }
 }

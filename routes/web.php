@@ -78,6 +78,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 $router->group(['prefix' => 'externo'], function () use ($router) {
     $router->get('campeonato/equipes', 'CampeonatoController@buscarEquipePorCampeonato');
     $router->get('rodada/jogos', 'RodadaController@buscarJogosPorRodada');
+    $router->get('rodada/ranking', 'RodadaController@ranking');
 });
 
 $router->post('/auth/login', 'AuthController@login');

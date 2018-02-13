@@ -19,6 +19,8 @@ class ApostaJogo extends Model
         'equipe_id'
     ];
 
+    protected $with = ['equipes'];
+
     /**
      * The attributes excluded from the model's JSON form.
      *
@@ -27,4 +29,11 @@ class ApostaJogo extends Model
     protected $hidden = [
         '',
     ];
+
+    public function equipes() 
+    {
+        return $this->hasOne('App\Equipe');
+    } 
+
+    protected $table = 'jogo_aposta';
 }

@@ -19,6 +19,8 @@ class CreateApostasTable extends Migration
             $table->foreign('usuario_id')->references('id')->on('usuarios');
             $table->integer('rodada_id')->unsigned();
             $table->foreign('rodada_id')->references('id')->on('rodadas');
+            $table->integer('pontuacao')->default(0);
+            $table->tinyInteger('saldo_gol')->default(0);
             $table->timestamps();
         });
     }
