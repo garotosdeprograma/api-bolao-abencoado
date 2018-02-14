@@ -225,6 +225,10 @@ class RodadaController extends Controller
 
         $query = $this->getDataAposta($id);
 
+        if ($query == null) {
+            return response()->json([], 200);
+        }
+
         $result = $this->groupBy($query);
 
         foreach ($result as $b => $apostas) {
