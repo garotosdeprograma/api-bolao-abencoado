@@ -27,6 +27,9 @@ class JogoController extends Controller
             'inicio' => 'required | date_format:Y-m-d H:i',
             'gol_casa' => 'integer | max: 20',
             'gol_visitante' => 'integer | max: 20',
+        ], $messages = [
+            'inicio.required' => 'Campo Data/Hora é obrigatório',
+            'inicio.date_format' => 'Campo Data/Hora é inválido'
         ]);
 
         $rodada_id = $request->input('rodada_id');
