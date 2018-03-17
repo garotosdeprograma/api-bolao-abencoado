@@ -117,14 +117,16 @@ class RodadaController extends Controller
 
         if(isset($id) && $id != null) {
             $rodadas = $rodadas->where('id', $id);
-        }else{
+        }
+        else{
             $rodadas = $rodadas->whereDate('fim', '>', Carbon::now('America/Fortaleza'));
         }
         $rodadas = $rodadas->with(['jogos.equipeCasa', 'jogos.equipeVisitante']);
 
         $rodadas = $rodadas->with(['jogos' => function($query) {
-            $query->whereDate('inicio', '>', Carbon::now('America/Fortaleza'));
-        }])->get();
+            $query->whereDate('inicio', '<', Carbon::now('America/Fortaleza'));
+        }])
+        ->get();
 
         return $rodadas;
     } 

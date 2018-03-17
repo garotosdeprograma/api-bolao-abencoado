@@ -17,6 +17,8 @@ class JogoController extends Controller
     public function cadastro(Request $request)
     {
 
+        $date = Carbon::now('America/Fortaleza');
+
         $this->validate($request, [
             'id' => 'nullable | integer',
             'estadio' => 'alpha_spaces | between:3, 100',
@@ -24,12 +26,13 @@ class JogoController extends Controller
             'equipe_visitante' => 'integer | max:1000',
             'campeonato_id' => 'required | integer | max:100',
             'rodada_id' => 'integer | max:1000000',
-            'inicio' => 'required | date_format:Y-m-d H:i',
+            'inicio' => 'required|date_format:Y-m-d H:i|after:now',
             'gol_casa' => 'integer | max: 20',
             'gol_visitante' => 'integer | max: 20',
         ], $messages = [
             'inicio.required' => 'Campo Data/Hora é obrigatório',
-            'inicio.date_format' => 'Campo Data/Hora é inválido'
+            'inicio.date_format' => 'Campo Data/Hora é inválido',
+            'inicio.after' => 'Campo Data/Hora deve ser uma data depois de agora'
         ]);
 
         $rodada_id = $request->input('rodada_id');
@@ -41,7 +44,7 @@ class JogoController extends Controller
         }
 
         if ((strtotime($inicio) - strtotime($rodada->inicio)) <= 0 || ((strtotime($inicio) + 5400) - (strtotime($rodada->fim) + 86400) ) >= 0) {
-            return response()->json(['error' => 'Dados inválidos'], 404);
+            return response()->json(['error' => 'Dados inválidos'], 422);
         }
 
         $gol_casa = $request->input('gol_casa');
