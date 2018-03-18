@@ -17,7 +17,6 @@ class Jogo extends Model
         'equipe_casa',
         'equipe_visitante',
         'inicio',
-        'fim',
         'campeonato_id',
         'rodada_id'
     ];

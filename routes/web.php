@@ -57,6 +57,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             $router->get('', 'RodadaController@buscar');
             
             $router->get('{id}', 'RodadaController@buscarPorId');
+
+            $router->get('jogos/{id}', 'RodadaController@buscarJogosPorRodadaAuth');
             
         });
 

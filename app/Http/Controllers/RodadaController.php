@@ -107,24 +107,26 @@ class RodadaController extends Controller
 
     }
 
-    private function jogosRodada($id) {
+    private function jogosRodada() {
+        // print_r(Carbon::now('America/Fortaleza'));die;
         $rodadas = Rodada::select(
             'id',
             'nome',
             'inicio',
             'fim'
-        );
+        )
+        ->whereDate('fim', '>', Carbon::now('America/Fortaleza'))
+        ->with(['jogos.equipeCasa', 'jogos.equipeVisitante'])
 
-        if(isset($id) && $id != null) {
-            $rodadas = $rodadas->where('id', $id);
-        }
-        else{
-            $rodadas = $rodadas->whereDate('fim', '>', Carbon::now('America/Fortaleza'));
-        }
-        $rodadas = $rodadas->with(['jogos.equipeCasa', 'jogos.equipeVisitante']);
+        // if(isset($id) && $id != null) {
+        //     $rodadas = $rodadas->where('id', $id);
+        // }
+        // else{
+        // }
 
-        $rodadas = $rodadas->with(['jogos' => function($query) {
-            $query->whereDate('inicio', '<', Carbon::now('America/Fortaleza'));
+
+        ->with(['jogos' => function($query) {
+            $query->where('jogos.inicio', '>=', Carbon::now('America/Fortaleza'));
         }])
         ->get();
 
@@ -133,40 +135,29 @@ class RodadaController extends Controller
 
     public function buscarJogosPorRodada(Request $request) {
         
-        $id = $request->query('id');
+        // $id = $request->query('id');
 
-        $rodadas = $this->jogosRodada($id);
+        $rodadas = $this->jogosRodada();
         
         return response()->json($rodadas, 200);
     }
 
-    // private function jogosRodada($id) {
-    //     $rodadas = Rodada::select(
-    //         'id',
-    //         'nome',
-    //         'inicio',
-    //         'fim'
-    //     );
-
-    //     if(isset($id) && $id != null) {
-    //         $rodadas = $rodadas->where('id', $id);
-    //     }else{
-    //         $rodadas = $rodadas->whereDate('fim', '>', Carbon::now('America/Fortaleza'));
-    //     }
-    //     $rodadas = $rodadas->with(['jogos.equipeCasa', 'jogos.equipeVisitante'])
-    //                         ->get();
-
-    //     return $rodadas;
-    // } 
-
-    // public function buscarJogosPorRodada(Request $request) {
+    public function buscarJogosPorRodadaAuth($id) {
         
-    //     $id = $request->query('id');
-
-    //     $rodadas = $this->jogosRodada($id);
-        
-    //     return response()->json($rodadas, 200);
-    // }
+        $rodadas = Rodada::select(
+            'id',
+            'nome',
+            'inicio',
+            'fim'
+        )
+        ->with(['jogos.equipeCasa', 'jogos.equipeVisitante'])
+        ->where('id', $id)
+        ->with(['jogos' => function($query) {
+            $query->orderBy('jogos.inicio', 'DESC');
+        }])
+        ->get();
+        return response()->json($rodadas, 200);
+    }
 
     public function buscarPorId($id) {
 
