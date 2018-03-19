@@ -86,6 +86,6 @@ $router->group(['prefix' => 'externo'], function () use ($router) {
 $router->post('/auth/login', 'AuthController@login');
 $router->post('/auth/register', 'UsuarioController@cadastro');  
 
-// $router->get('/', function () use ($router) {
-//     return $router->app->version();
-// });
+$router->get('/', function () use ($router) {
+    return $router->app->version();
+});
