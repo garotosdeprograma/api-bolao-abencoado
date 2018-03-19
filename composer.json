@@ -9,10 +9,10 @@
         "laravel/lumen-framework": "5.5.*",
         "vlucas/phpdotenv": "~2.2",
         "tymon/jwt-auth": "^1.0@dev",
-        "doctrine/instantiator": "^1.0.2"
+        "doctrine/instantiator": "^1.0.2",
+        "fzaninotto/faker": "~1.4"
     },
     "require-dev": {
-        "fzaninotto/faker": "~1.4",
         "phpunit/phpunit": "~6.0",
         "mockery/mockery": "~0.9"
     },
