@@ -9,7 +9,7 @@ class CorsMiddleware
             'Access-Control-Allow-Origin' => '*',
             'Access-Control-Allow-Methods' => 'HEAD,GET,POST,PUT,PATCH,DELETE,OPTIONS',
             'Access-Control-Allow-Credentials' => 'true',
-            'Access-Control-Max-Age' => '86400',
+            'Access-Control-Max-Age' => '0',
             'Access-Control-Allow-Headers' => $request->header('Access-Control-Request-Headers')
         ];
         if ($request->isMethod('OPTIONS')) {

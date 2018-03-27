@@ -80,8 +80,7 @@ class JogoController extends Controller
             'equipe_visitante' => 'integer | max:1000',
             'campeonato_id' => 'integer | max:100',
             'rodada_id' => 'integer | max:1000000',
-            'inicio' => 'date | before:fim',
-            'fim' => 'date',
+            'inicio' => 'required|date_format:Y-m-d H:i|after:now',
             'gol_casa' => 'integer | max: 20',
             'gol_visitante' => 'integer | max: 20'
         ]);
@@ -102,10 +101,6 @@ class JogoController extends Controller
 
         if ($request->input('inicio') != null) {
             $jogo->inicio = $request->input('inicio');
-        }
-
-        if ($request->input('fim') != null) {
-            $jogo->fim = $request->input('fim');
         }
         
         if ($request->input('campeonato_id') != null) {
