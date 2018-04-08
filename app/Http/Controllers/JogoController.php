@@ -26,7 +26,7 @@ class JogoController extends Controller
             'equipe_visitante' => 'integer | max:1000',
             'campeonato_id' => 'required | integer | max:100',
             'rodada_id' => 'integer | max:1000000',
-            'inicio' => 'required|date_format:Y-m-d H:i|after:now',
+            'inicio' => 'required|date_format:Y-m-d H:i|after:today',
             'gol_casa' => 'integer | max: 20',
             'gol_visitante' => 'integer | max: 20',
         ], $messages = [
@@ -74,13 +74,15 @@ class JogoController extends Controller
     public function edit(Request $request, $id)
     {
 
+        // 'inicio' => 'required|date_format:Y-m-d H:i|after:now'
+
         $validator = Validator::make($request->all(), [
             'estadio' => 'alpha_spaces | between:3, 100',
             'equipe_casa' => 'integer | max:1000',
             'equipe_visitante' => 'integer | max:1000',
             'campeonato_id' => 'integer | max:100',
             'rodada_id' => 'integer | max:1000000',
-            'inicio' => 'required|date_format:Y-m-d H:i|after:now',
+            'inicio' => 'required|date_format:Y-m-d H:i',
             'gol_casa' => 'integer | max: 20',
             'gol_visitante' => 'integer | max: 20'
         ]);
