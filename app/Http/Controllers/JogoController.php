@@ -26,7 +26,7 @@ class JogoController extends Controller
             'equipe_visitante' => 'integer | max:1000',
             'campeonato_id' => 'required | integer | max:100',
             'rodada_id' => 'integer | max:1000000',
-            'inicio' => 'required|date_format:Y-m-d H:i|after:today',
+            'inicio' => 'required|date_format:Y-m-d H:i',
             'gol_casa' => 'integer | max: 20',
             'gol_visitante' => 'integer | max: 20',
         ], $messages = [
